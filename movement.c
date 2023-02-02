@@ -36,6 +36,7 @@ void right(int in1, int in2, int in3, int in4){
   digitalWrite(in2, LOW);
   digitalWrite(in3, HIGH);
   digitalWrite(in4, LOW);
+  /*add delay*/
 }
 
 
@@ -44,6 +45,7 @@ void left(int in1, int in2, int in3, int in4){
   digitalWrite(in2, LOW);
   digitalWrite(in3, LOW);
   digitalWrite(in4, LOW);
+  /*add delay*/
 }
 
 
@@ -52,4 +54,5 @@ void turn_around(int in1, int in2, int in3, int in4){
   digitalWrite(in2, LOW);
   digitalWrite(in3, LOW);
   digitalWrite(in4, HIGH);
+  /*add delay*/
 }
