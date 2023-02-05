@@ -3,17 +3,6 @@
     5 IR sensors
 */
 
-int algorithm = 0;
-
-
-/* Input pins */
-int motor1_0 ;
-int motor1_1 ;
-int motor2_0 ;
-int motor2_1 ;
-
-int motor_speed;
-
 int arena_map[16][16] = {
     {14, 13, 12, 11, 10, 9, 8, 7, 7, 8, 9, 10, 11, 12, 13, 14},
     {13, 12, 11, 10,  9, 8, 7, 6, 6, 7, 8,  9, 10, 11, 12, 13},

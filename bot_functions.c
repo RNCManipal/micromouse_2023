@@ -4,13 +4,14 @@
 /*This project uses flood fill algorithm. Pseudocode is as follows - 
     1. Move mouse to lowest cost node
     2. If all neighbors are higher than or equal to current node, push node to queue.
-    3. increment current node by 1 and push acessible neighbors to queue
-    4. repeat step 3 until queue is empty
+    3. Pop node from queue
+    4. If all neighbors are higher than or equal to current node, increment current node by 1 and push acessible neighbors to queue
+    5. repeat step 3 until queue is empty
 */
 
 void swap(int *x, int *y){
     //Swaps values of two  numbers x and y. 
-    //Fucntion is complete
+    //Function is complete
     int temp = *x;
     *x = *y;
     *y = temp;

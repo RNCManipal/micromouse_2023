@@ -1,6 +1,6 @@
 #include<stdio.h>
 #include <stdlib.h>
-#define SIZE 3
+#define SIZE 5
 
 int ** queue;
 int first, last;
@@ -43,26 +43,70 @@ int* queue_pop (){
         return NULL;
     }
 
-    int * temp = queue[first];
-    free (queue[first]);
+    printf("\n%d %d", queue[first][0], queue[first][1]);
+
+    int *temp = queue[first];
+
+    printf("\n%d %d", temp[0], temp[1]);
+
     first = (first + 1)%SIZE;
 
     return temp;
 }
 
 void display(){
-    for (int i = first; (i<SIZE)&&(i < last); i++){
-        printf (" i =%d %d ", queue[i][0], queue[i][1]);
+    if (queue_empty()){
+        printf ("\nQueue is empty\n");
+        return;
     }
-
-    if (first > last){
-        for (int i = 0; i < last; i++){
-            printf (" i =%d %d ", queue[i][0], queue[i][1]);
+    
+    if(last>first){
+        for(int i=first;i<last;i++)
+            printf("\n%d %d\n",queue[i][0], queue[i][1]);
+    }
+    else
+    {
+        int i=first;
+        while(i<SIZE)
+        {
+            printf("\n%d %d\n",queue[i][0], queue[i][1]);;
+            i++;
         }
-    }
+        i=0;
+        while(i<last)
+        {
+            printf("\n%d %d\n",queue[i][0], queue[i][1]);
+            i++;
+        }
+    }                     
 }
 
 int main(){
     initialize_queue();
-    
+    int ch = 0;
+    int *temp;
+
+    while (ch!=3){
+        printf ("\n1. Push 2. Pop 3. Exit\n");
+
+        scanf (" %d", &ch);
+
+        if (ch == 1){
+            int x, y;
+            scanf ("%d %d", &x, &y);
+            queue_push (x, y);
+        }
+
+        if (ch == 2){
+            temp = queue_pop();
+            if (temp == NULL){
+                printf ("\nQueue is empty\n");
+            }
+            else{
+                printf ("\nPopped %d %d\n", temp[0], temp[1]);
+            }
+        }
+
+        display(); 
+    }
 }
