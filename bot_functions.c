@@ -176,7 +176,7 @@ int minimum_value_accessible_neighbors(int ** arena_map, int *pos, int *wall_arr
     }
 }
 
-int final_action(int **arena_map, int bot_pos[2]){
+int final_action(int **arena_map, int bot_pos[2], int algorithm){
     // Main function that decided the action to be taken. Function unverified
 
     int *smallest_value;
@@ -186,21 +186,45 @@ int final_action(int **arena_map, int bot_pos[2]){
 
     do{
         min_access = minimum_value_accessible_neighbors(arena_map, bot_pos, wall_array, &small);
-        switch (min_access){
-            case 0://move left
-                return 0;
-                break;
-            case 1: //move forward
-                return 1;
-                break;
-            case 2: //move right
-                return 2;
-                break;
-            case 3: // turn around
-                return 3;
-                break;
-            case -1:
-                rearrange_map(arena_map, bot_pos);
+        
+        if (algorithm == 0){ //lsrb
+            switch (min_access){
+                case 0://move left
+                    return 0;
+                    break;
+                case 1: //move forward
+                    return 1;
+                    break;
+                case 2: //move right
+                    return 2;
+                    break;
+                case 3: // turn around
+                    return 3;
+                    break;
+                case -1:
+                    rearrange_map(arena_map, bot_pos);
+            }
         }
+
+        else if (algorithm == 1){
+            switch (min_access){ //rslb
+
+                case 2://move right
+                    return 2;
+                    break;
+                case 1: //move forward
+                    return 1;
+                    break;
+                case 0: //move left
+                    return 0;
+                    break;
+                case 3: // turn around
+                    return 3;
+                    break;
+                case -1:
+                    rearrange_map(arena_map, bot_pos);
+            }
+        }
+
     }while (min_access != -1);
 }
