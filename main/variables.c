@@ -1,21 +1,28 @@
 #include "bot_functions.h"
 
-int algorithm = 0;
+int algorithm = 0; // lsrb = 0, rslb = 1
+int clearence ; //distance between sensor and wall
 
 
-/* Input pins */
-int motor1_0 ;
-int motor1_1 ;
-int motor2_0 ;
-int motor2_1 ;
+const int trigPin1 = 9;  // Trigger pin for the first sensor
+const int echoPin1 = 10; // Echo pin for the first sensor
+const int trigPin2 = 3;  // Trigger pin for the second sensor
+const int echoPin2 = 2; // Echo pin for the second sensor
 
-int motor_speed ;
+const int trigPin3 = 4;  // Trigger pin for the first sensor
+const int echoPin3 = 5; // Echo pin for the first sensor
+const int trigPin4 = 7;  // Trigger pin for the second sensor
+const int echoPin4 = 6; // Echo pin for the second sensor
 
-int sens_pin1 ;
-int sens_pin2 ;
-int sens_pin3 ;
-int sens_pin4 ;
-int sens_pin5 ;
 
-int enable1 ;
-int enable2 ;
+int measure_distance(int trigPin, int echoPin){
+    long duration, distance;
+    digitalWrite(trigPin, LOW);
+    delayMicroseconds(2);
+    digitalWrite(trigPin, HIGH);
+    delayMicroseconds(10);
+    digitalWrite(trigPin, LOW);
+    duration = pulseIn(echoPin, HIGH);
+    distance = (duration1 / 2) / 29.1;
+    return distance;
+}

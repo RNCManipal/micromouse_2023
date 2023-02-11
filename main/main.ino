@@ -25,7 +25,6 @@ int arena_map[16][16] = {
 }; //arena node weight map
 int position[2] = {15, 0}; //Current position of bot
 int facing = 1; // 0 = East, 1 = North, 2 = West, 3 = South
-int clearence ; //distance between sensor and wall
 
 void setup(){
 
