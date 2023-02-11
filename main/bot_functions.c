@@ -89,9 +89,38 @@ int* detect_wall(int sensor_data[4], int clearence, int facing){
     Function unverified*/
 
     int *wall_array = calloc(4, sizeof(int));
+    
+    int *sensor_data_wrt_compass = calloc(4, sizeof(int));
+
+    switch (facing){
+        case 0:
+            sensor_data_wrt_compass[0] = sensor_data[1];
+            sensor_data_wrt_compass[1] = sensor_data[2];
+            sensor_data_wrt_compass[2] = sensor_data[3];
+            sensor_data_wrt_compass[3] = sensor_data[0];
+            break;
+        case 1:
+            sensor_data_wrt_compass[0] = sensor_data[0];
+            sensor_data_wrt_compass[1] = sensor_data[1];
+            sensor_data_wrt_compass[2] = sensor_data[2];
+            sensor_data_wrt_compass[3] = sensor_data[3];
+            break;
+        case 2:
+            sensor_data_wrt_compass[0] = sensor_data[3];
+            sensor_data_wrt_compass[1] = sensor_data[0];
+            sensor_data_wrt_compass[2] = sensor_data[1];
+            sensor_data_wrt_compass[3] = sensor_data[2];
+            break;
+        case 3:
+            sensor_data_wrt_compass[0] = sensor_data[2];
+            sensor_data_wrt_compass[1] = sensor_data[3];
+            sensor_data_wrt_compass[2] = sensor_data[0];
+            sensor_data_wrt_compass[3] = sensor_data[1];
+            break;
+    }
 
     for (int i =0 ; i<4; i++){
-        if (sensor_data[i] >= clearence){
+        if (sensor_data_wrt_compass[i] <= clearence){
             wall_array[i] = 1;
         }
         
