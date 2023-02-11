@@ -84,10 +84,23 @@ int* minimum_cost(int **arena_map, int bot_pos[2]){
     return return_value;
 }
 
-int* detect_wall(){
-    /*Siya needs to update
-    returns an array [l, s, r, b] with 1 if wall is detected and 0 if not
+int* detect_wall(int sensor_data[4], int clearence, int facing){
+    /*returns an array [l, s, r, b] with 1 if wall is detected and 0 if not
     Function unverified*/
+
+    int *wall_array = calloc(4, sizeof(int));
+
+    for (int i =0 ; i<4; i++){
+        if (sensor_data[i] >= clearence){
+            wall_array[i] = 1;
+        }
+        
+        else{
+            wall_array[i] = 0;
+        }
+    }
+
+    return wall_array;
 }
 
 void rearrange_map(int ** arena_map, int base_pos[2]){
