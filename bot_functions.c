@@ -8,6 +8,7 @@
     3. Pop node from queue
     4. If all neighbors are higher than or equal to current node, increment current node by 1 and push acessible neighbors to queue
     5. repeat step 3 until queue is empty
+    6. Repeat step 1 until current node has 0 cost (end of the maze)
 */
 
 void swap(int *x, int *y){
@@ -87,7 +88,7 @@ int* minimum_cost(int **arena_map, int bot_pos[2]){
 int* detect_wall(){
     /*Siya needs to update
     returns an array [l, s, r, b] with 1 if wall is detected and 0 if not
-    Function unverified*/
+    Needs to maintain position wrt compass. A gyroscope can be used*/
 }
 
 void rearrange_map(int ** arena_map, int base_pos[2]){
@@ -102,7 +103,7 @@ void rearrange_map(int ** arena_map, int base_pos[2]){
     while (!queue_empty()){
         poped = queue_pop();
         wall_array = detect_wall();
-        min_access = minimum_value_accessible_neighbors(arena_map, poped, wall_array, small); //returns index of minimum value accessible neighbor
+        min_access = minimum_value_accessible_neighbors(arena_map, poped, wall_array, &small); //returns index of minimum value accessible neighbor
 
         if (min_access == -1){ //if all accessible neighbors have higher cost than current node
 
@@ -240,12 +241,16 @@ int direction_wrt_bot(int **arena_map, int bot_pos[2], int algorithm, int *facin
         return 1;
     }
 
-    if (((*facing+1)%4 == direction)){
+    else if (((*facing+1)%4 == direction)){
         //turn right
+        *facing = direction;
+        return 2;
     }
 
     else if (*facing == (direction+1)%4){
         //turn left 
+        *facing = direction;
+        return 0;
     }
 
     while (*facing != direction){
@@ -259,6 +264,7 @@ int direction_wrt_bot(int **arena_map, int bot_pos[2], int algorithm, int *facin
             *facing += 1;
         }       
     }
+    return 3;
 
     //move forward
 }
