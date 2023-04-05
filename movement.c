@@ -8,52 +8,97 @@
     in3, in4 => motor 2 
 */
 
-void forward(int in1, int in2, int in3, int in4){
-  digitalWrite(in1, HIGH);
-  digitalWrite(in2, LOW);
-  digitalWrite(in3, HIGH);
-  digitalWrite(in4, LOW);
+void forward(){
+  digitalWrite(mtrpin1_1, HIGH);
+  digitalWrite(mtrpin1_2, LOW);
+
+  digitalWrite(mtrpin2_1, HIGH);
+  digitalWrite(mtrpin2_2, LOW);
+
+  analogWrite(mtrspd1, OPTIMUM_SPEED);
+  analogWrite(mtrspd2, OPTIMUM_SPEED);
 }
 
 
-void brake(int in1, int in2, int in3, int in4){
-  digitalWrite(in1, LOW);
-  digitalWrite(in2, LOW);
-  digitalWrite(in3, LOW);
-  digitalWrite(in4, LOW);
+void brake(){
+  digitalWrite(mtrpin1_1, LOW);
+  digitalWrite(mtrpin1_2, LOW);
+
+  digitalWrite(mtrpin2_1, LOW);
+  digitalWrite(mtrpin2_2, LOW);
 }
 
 
-void backward(int in1, int in2, int in3, int in4){
-  digitalWrite(in1, LOW);
-  digitalWrite(in2, HIGH);
-  digitalWrite(in3, LOW);
-  digitalWrite(in4, HIGH);
+void backward(){
+  digitalWrite(mtrpin1_1, LOW);
+  digitalWrite(mtrpin1_2, HIGH);
+
+  digitalWrite(mtrpin2_1, LOW);
+  digitalWrite(mtrpin2_2, HIGH);
+
+  analogWrite(mtrspd1, OPTIMUM_SPEED);
+  analogWrite(mtrspd2, OPTIMUM_SPEED);
 }
 
 
-void right(int in1, int in2, int in3, int in4){
-  digitalWrite(in1, LOW);
-  digitalWrite(in2, LOW);
-  digitalWrite(in3, HIGH);
-  digitalWrite(in4, LOW);
+void right(){
+  digitalWrite(mtrpin1_1, LOW);
+  digitalWrite(mtrpin1_2, LOW);
+  digitalWrite(mtrpin2_1, HIGH);
+  digitalWrite(mtrpin2_2, LOW);
+
+  analogWrite(mtrspd1, OPTIMUM_SPEED);
+  analogWrite(mtrspd2, OPTIMUM_SPEED);
   /*add delay*/
 }
 
 
-void left(int in1, int in2, int in3, int in4){
-  digitalWrite(in1, HIGH);
-  digitalWrite(in2, LOW);
-  digitalWrite(in3, LOW);
-  digitalWrite(in4, LOW);
+void left(){
+  digitalWrite(mtrpin1_1, HIGH);
+  digitalWrite(mtrpin1_2, LOW);
+  digitalWrite(mtrpin2_1, LOW);
+  digitalWrite(mtrpin2_2, LOW);
+
+  analogWrite(mtrspd1, OPTIMUM_SPEED);
+  analogWrite(mtrspd2, OPTIMUM_SPEED);
   /*add delay*/
 }
 
 
-void turn_around(int in1, int in2, int in3, int in4){
-  digitalWrite(in1, HIGH);
-  digitalWrite(in2, LOW);
-  digitalWrite(in3, LOW);
-  digitalWrite(in4, HIGH);
+void turn_around(){
+  digitalWrite(mtrpin1_1, HIGH);
+  digitalWrite(mtrpin1_2, LOW);
+  digitalWrite(mtrpin2_1, LOW);
+  digitalWrite(mtrpin2_2, HIGH);
+
+  analogWrite(mtrspd1, OPTIMUM_SPEED);
+  analogWrite(mtrspd2, OPTIMUM_SPEED);
   /*add delay*/
+}
+
+void Motor_SetSpeed(int spdL, int spdR){
+  if (spdL < 0){
+    analogWrite(mtrspd1, -spdL);
+    digitalWrite(mtrpin1_1, LOW);
+    digitalWrite(mtrpin1_2, HIGH);
+  }
+
+  else{
+    analogWrite(mtrspd1, spdL);
+    digitalWrite(mtrpin1_1, HIGH);
+    digitalWrite(mtrpin1_2, LOW);
+  }
+
+
+  if (spdR < 0){
+    analogWrite(mtrspd2, -spdR);
+    digitalWrite(mtrpin2_1, LOW);
+    digitalWrite(mtrpin2_2, HIGH);
+  }
+
+  else{
+    analogWrite(mtrspd2, spdR);
+    digitalWrite(mtrpin2_1, HIGH);
+    digitalWrite(mtrpin2_2, LOW);
+  }
 }

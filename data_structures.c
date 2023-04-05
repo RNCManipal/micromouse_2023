@@ -1,6 +1,6 @@
 #include<stdio.h>
 #include <stdlib.h>
-#include "bot_fucntions.h"
+#include "bot_functions.h"
 #define SIZE 5
 
 int ** queue;

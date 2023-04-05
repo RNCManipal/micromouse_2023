@@ -1,6 +1,9 @@
 #include "bot_functions.h"
+#define OPTIMUM_SPEED 150
 
 int algorithm = 0;
+
+int kp, ki, kd;
 
 
 /* Input pins */

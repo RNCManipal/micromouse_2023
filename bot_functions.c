@@ -6,10 +6,14 @@
     1. Move mouse to lowest cost node
     2. If all neighbors are higher than or equal to current node, push node to queue.
     3. Pop node from queue
-    4. If all neighbors are higher than or equal to current node, increment current node by 1 and push acessible neighbors to queue
-    5. repeat step 3 until queue is empty
+    4. If all neighbors are higher than or equal to current node, change current node's value by minimum value + 1 and push accessible neighbors to queue
+    5. Repeat step 3 until queue is empty
     6. Repeat step 1 until current node has 0 cost (end of the maze)
+
+    Code uses a lsrb naming scheme when returning values.
 */
+
+int last_error; //stores last error value for PID control
 
 void swap(int *x, int *y){
     //Swaps values of two  numbers x and y. 
@@ -86,8 +90,7 @@ int* minimum_cost(int **arena_map, int bot_pos[2]){
 }
 
 int* detect_wall(){
-    /*Siya needs to update
-    returns an array [l, s, r, b] with 1 if wall is detected and 0 if not
+    /*returns an array [l, s, r, b] with 1 if wall is detected and 0 if not
     Needs to maintain position wrt compass. A gyroscope can be used*/
 }
 
@@ -233,7 +236,8 @@ int direction_wrt_compass(int **arena_map, int bot_pos[2], int algorithm){
 }
 
 
-int direction_wrt_bot(int **arena_map, int bot_pos[2], int algorithm, int *facing){
+int direction_wrt_bot(int **arena_map, int bot_pos[2], int algorithm, int *facing){4
+    /*Decide which direction the both should move in from its perspective*/
     int direction = direction_wrt_compass(arena_map, bot_pos,algorithm);
 
     if (*facing == direction){
@@ -265,6 +269,22 @@ int direction_wrt_bot(int **arena_map, int bot_pos[2], int algorithm, int *facin
         }       
     }
     return 3;
-
     //move forward
+}
+
+void pid(int *wall_array){
+    //PID controller. Use this to control the speed of the motors
+    //To be done : Make the bot move forward for a certain amount of time and then check if its moving straight or not. If not, then we can use the previous turn to correct the error.
+
+    int error = wall_array[0] - wall_array[2];
+    int pv = kp*error + kd*(error-lasterror);
+    lasterror = error;
+    Motor_SetSpeed(min(max(OPTIMUM_SPEED + pv, 0), 200), min(max(OPTIMUM_SPEED - pv, 0), 200));
+}
+
+void position_init(){
+    //Initializes the bot so that  it is at the center of the cell.
+    //Sensor values of left, right, back should be equal
+    //May not be possible if we are not using a back sensor. 
+    //In that case, we can use the front sensor to check if the bot is at the center of the cell, but pid should be enough to stabilize itself so shouldnt be a problem.
 }
