@@ -23,9 +23,9 @@ void swap(int *x, int *y){
     *y = temp;
 }
 
-int* minimum_cost(int **arena_map, int bot_pos[2]){
+int* minimum_cost(int **arena_map, int bot_pos[2], int *sortedArray){
     /*
-        returns array with [0,1,2,3] as [l,s,r,b] in ascending order
+        returns array with [0,1,2,3] as [l,s,r,b] in ascending order of their weights
         Function 90% verified
     */
 
@@ -86,6 +86,11 @@ int* minimum_cost(int **arena_map, int bot_pos[2]){
         swap(&temp_arr[i], &temp_arr[smallest]);
         swap(&return_value[i], &return_value[smallest]);
     }
+
+    for (int i =0 ; i<4; i++){ //copying sorted array to sortedArray
+        sortedArray[i] = temp_arr[i];
+    }
+
     return return_value;
 }
 
@@ -145,11 +150,12 @@ int minimum_value_accessible_neighbors(int ** arena_map, int *pos, int *wall_arr
     Function unverified
     */
 
-    int *min_cost = minimum_cost(arena_map, pos);
+    int sortedArray[4]; 
+    int *min_cost = minimum_cost(arena_map, pos, sortedArray);
 
     for (int i =0; i< 4; i++){
 
-        if (arena_map[pos[0]][pos[1]]>min_cost[i]){ //Checking if current node is greater than minimum accessible neighbors.
+        if (arena_map[pos[0]][pos[1]]>sortedArray[min_cost[i]]){ //Checking if current node is greater than minimum accessible neighbors.
             if (wall_array[min_cost[i]] == 0){ //Checking if node is accessible
                 return i;
             }   
