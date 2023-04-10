@@ -236,7 +236,7 @@ int direction_wrt_compass(int **arena_map, int bot_pos[2], int algorithm){
 }
 
 
-int direction_wrt_bot(int **arena_map, int bot_pos[2], int algorithm, int *facing){4
+int direction_wrt_bot(int **arena_map, int bot_pos[2], int algorithm, int *facing){
     /*Decide which direction the both should move in from its perspective*/
     int direction = direction_wrt_compass(arena_map, bot_pos,algorithm);
 

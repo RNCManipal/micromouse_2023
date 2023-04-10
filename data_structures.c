@@ -1,7 +1,7 @@
 #include<stdio.h>
 #include <stdlib.h>
 #include "bot_functions.h"
-#define SIZE 5
+#define SIZE 260
 
 int ** queue;
 int first, last;
