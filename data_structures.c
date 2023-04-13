@@ -1,6 +1,6 @@
-#include<stdio.h>
+#include <stdio.h>
 #include <stdlib.h>
-#include "bot_functions.h"
+// #include "bot_functions.h"
 #define SIZE 260
 
 int ** queue;
@@ -35,7 +35,7 @@ void queue_push (int x, int y){
     queue[last][0] = x;
     queue[last][1] = y;
     last = (last+1)%SIZE;
-    printf("Done");
+    // printf("Done");
 }
 
 int* queue_pop (){
@@ -44,11 +44,11 @@ int* queue_pop (){
         return NULL;
     }
 
-    printf("\n%d %d", queue[first][0], queue[first][1]);
+    // printf("\n%d %d", queue[first][0], queue[first][1]);
 
     int *temp = queue[first];
 
-    printf("\n%d %d", temp[0], temp[1]);
+    // printf("\n%d %d", temp[0], temp[1]);
 
     first = (first + 1)%SIZE;
 
@@ -57,7 +57,7 @@ int* queue_pop (){
 
 void display(){
     if (queue_empty()){
-        printf ("\nQueue is empty\n");
+        // printf ("\nQueue is empty\n");
         return;
     }
     
@@ -82,32 +82,32 @@ void display(){
     }                     
 }
 
-int main(){
-    initialize_queue();
-    int ch = 0;
-    int *temp;
+// int main(){
+//     initialize_queue();
+//     int ch = 0;
+//     int *temp;
 
-    while (ch!=3){
-        printf ("\n1. Push 2. Pop 3. Exit\n");
+//     while (ch!=3){
+//         printf ("\n1. Push 2. Pop 3. Exit\n");
 
-        scanf (" %d", &ch);
+//         scanf (" %d", &ch);
 
-        if (ch == 1){
-            int x, y;
-            scanf ("%d %d", &x, &y);
-            queue_push (x, y);
-        }
+//         if (ch == 1){
+//             int x, y;
+//             scanf ("%d %d", &x, &y);
+//             queue_push (x, y);
+//         }
 
-        if (ch == 2){
-            temp = queue_pop();
-            if (temp == NULL){
-                printf ("\nQueue is empty\n");
-            }
-            else{
-                printf ("\nPopped %d %d\n", temp[0], temp[1]);
-            }
-        }
+//         if (ch == 2){
+//             temp = queue_pop();
+//             if (temp == NULL){
+//                 printf ("\nQueue is empty\n");
+//             }
+//             else{
+//                 printf ("\nPopped %d %d\n", temp[0], temp[1]);
+//             }
+//         }
 
-        display(); 
-    }
-}
+//         display(); 
+//     }
+// }

@@ -1,19 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "bot_functions.h"
-
-/*This project uses flood fill algorithm. Pseudocode is as follows - 
-    1. Move mouse to lowest cost node
-    2. If all neighbors are higher than or equal to current node, push node to queue.
-    3. Pop node from queue
-    4. If all neighbors are higher than or equal to current node, change current node's value by minimum value + 1 and push accessible neighbors to queue
-    5. Repeat step 3 until queue is empty
-    6. Repeat step 1 until current node has 0 cost (end of the maze)
-
-    Code uses a lsrb naming scheme when returning values.
-*/
-
-int last_error; //stores last error value for PID control
+#include "data_structures.c"
 
 void swap(int *x, int *y){
     //Swaps values of two  numbers x and y. 
@@ -26,7 +13,7 @@ void swap(int *x, int *y){
 int* minimum_cost(int arena_map[16][16], int bot_pos[2], int *sortedArray){
     /*
         returns array with [0,1,2,3] as [l,s,r,b] in ascending order of their weights
-        Function verified
+        Function 90% verified
     */
 
    //Getting values of neighbors
@@ -73,7 +60,7 @@ int* minimum_cost(int arena_map[16][16], int bot_pos[2], int *sortedArray){
     for (int i  =0 ; i<4; i++){
         smallest = i;
         for (int j = i +1;j<4; j++){
-            if (temp_arr[smallest]>temp_arr[j]){
+            if (temp_arr[smallest]>temp_arr[j]){ // 9 8 5 5
                 smallest = j;
             }
         }
@@ -89,14 +76,9 @@ int* minimum_cost(int arena_map[16][16], int bot_pos[2], int *sortedArray){
     return return_value;
 }
 
-int* detect_wall(){
-    /*returns an array [l, s, r, b] with 1 if wall is detected and 0 if not
-    Needs to maintain position wrt compass. A gyroscope can be used*/
-}
-
 int minimum_value_accessible_neighbors(int arena_map[16][16], int pos[2], int wall_array[4], int *smallest_accessible_regardless){
     /*returns 0 for left, 1 for forward, 2 for right, 3 for back, -1 if no minimum accessible neighbors
-    Function verified
+    Function unverified
     */
 
     int sortedArray[4]; 
@@ -136,21 +118,31 @@ int minimum_value_accessible_neighbors(int arena_map[16][16], int pos[2], int wa
         }
     }
 }
-
-void rearrange_map(int ** arena_map, int base_pos[2]){
-    //Changes value of map node cost in case the current node has a strictly lower cost than all of its accessible neighbors. Function verified
-
+int init =0;
+void rearrange_map(int arena_map[16][16], int base_pos[2]){
+    //Changes value of map node cost in case the current node has a strictly lower cost than all of its accessible neighbors. Function unverified
     queue_push(base_pos[0], base_pos[1]); //pushing base node to queue
     int *poped;
     int min_access;
-    int *wall_array;
+    int *wall_array = calloc (4, sizeof(int));
     int small;
 
     while (!queue_empty()){
         poped = queue_pop();
-        wall_array = detect_wall();
+        if(init == 0){
+            init = 1;
+            wall_array[0] = 0;
+            wall_array[1] = 0;
+            wall_array[2] = 0;
+            wall_array[3] = 1;
+        }
+        else{
+            wall_array[0] = 0;
+            wall_array[1] = 0;
+            wall_array[2] = 0;
+            wall_array[3] = 0;
+        }
         min_access = minimum_value_accessible_neighbors(arena_map, poped, wall_array, &small); //returns index of minimum value accessible neighbor
-
         if (min_access == -1){ //if all accessible neighbors have higher cost than current node
 
             arena_map[poped[0]][poped[1]] = small + 1;
@@ -183,109 +175,36 @@ void rearrange_map(int ** arena_map, int base_pos[2]){
     }
 }
 
-int direction_wrt_compass(int **arena_map, int bot_pos[2], int algorithm){
-    // Checks which direction to move in wrt to a compass. i.e 0=>East, 1=>North, 2=>West, 3=>South. Function unverified
 
-    int *smallest_value;
-    int *wall_array = detect_wall();
-    int small;
-    int min_access;
+int main(){
+int arena_map[16][16] = {
+    {14, 14, 12, 11, 10, 9, 8, 7, 7, 8, 9, 10, 11, 12, 13, 14},
+    {5, 12, 13, 10,  9, 8, 7, 6, 6, 7, 8,  9, 10, 11, 12, 13},
+    {12, 14, 10,  9,  8, 7, 6, 5, 5, 6, 7,  8,  9, 10, 11, 12},
+    {11, 10,  9,  8,  7, 6, 5, 4, 4, 5, 6,  7,  8,  9, 10, 11},
+    {10,  9,  8,  7,  6, 5, 4, 3, 3, 4, 5,  6,  7,  8,  9, 10},
+    { 9,  8,  7,  6,  5, 4, 3, 2, 2, 3, 4,  5,  6,  7,  8, 9 },
+    { 8,  7,  6,  5,  4, 3, 2, 1, 1, 2, 3,  4,  5,  6,  7, 8 },
+    { 7,  6,  5,  4,  3, 2, 1, 0, 0, 1, 2,  3,  4,  5,  6, 7 },
+    { 7,  6,  5,  4,  3, 2, 1, 0, 0, 1, 2,  3,  4,  5,  6, 7 },
+    { 8,  7,  6,  5,  4, 3, 2, 1, 1, 2, 3,  4,  5,  6,  7, 8 },
+    { 9,  8,  7,  6,  5, 4, 3, 2, 2, 3, 4,  5,  6,  7,  8, 9 },
+    {10,  9,  8,  7,  6, 5, 4, 3, 3, 4, 5,  6,  7,  8,  9, 10},
+    {11, 10,  9,  8,  7, 6, 5, 4, 4, 5, 6,  7,  8,  9, 10, 11},
+    {12, 11, 10,  9,  8, 7, 6, 5, 5, 6, 7,  8,  9, 10, 11, 12},
+    {13, 12, 11, 10,  9, 8, 7, 6, 6, 7, 8,  9, 10, 11, 12, 13},
+    {14, 10, 12, 11, 10, 9, 8, 7, 7, 8, 9, 10, 11, 12, 13, 14},
+}; //arena node weight map
+    int position[2] = {1, 0};
+    initialize_queue();
 
-    do{
-        min_access = minimum_value_accessible_neighbors(arena_map, bot_pos, wall_array, &small);
-        
-        if (algorithm == 0){ //lsrb
-            switch (min_access){
-                case 0://move east
-                    return 0;
-                    break;
-                case 1: //move north
-                    return 1;
-                    break;
-                case 2: //move west
-                    return 2;
-                    break;
-                case 3: // move south
-                    return 3;
-                    break;
-                case -1:
-                    rearrange_map(arena_map, bot_pos);
-            }
+    rearrange_map(arena_map, position);
+
+    for (int i = 0; i<16; i++){
+        for (int j = 0; j<16; j++){
+            printf("%d ", arena_map[i][j]);
         }
-
-        else if (algorithm == 1){
-            switch (min_access){ //rslb
-
-                case 2://move west
-                    return 2;
-                    break;
-                case 1: //move north
-                    return 1;
-                    break;
-                case 0: //move east
-                    return 0;
-                    break;
-                case 3: // move south
-                    return 3;
-                    break;
-                case -1:
-                    rearrange_map(arena_map, bot_pos);
-            }
-        }
-
-    }while (min_access != -1);
-}
-
-
-int direction_wrt_bot(int **arena_map, int bot_pos[2], int algorithm, int *facing){
-    /*Decide which direction the both should move in from its perspective*/
-    int direction = direction_wrt_compass(arena_map, bot_pos,algorithm);
-
-    if (*facing == direction){
-        //move forward
-        return 1;
+        printf("\n");
     }
-
-    else if (((*facing+1)%4 == direction)){
-        //turn right
-        *facing = direction;
-        return 2;
-    }
-
-    else if (*facing == (direction+1)%4){
-        //turn left 
-        *facing = direction;
-        return 0;
-    }
-
-    while (*facing != direction){
-        if (*facing > direction){
-            //turn left
-            *facing -= 1;
-        }
-
-        else if (*facing < direction){
-            //turn right
-            *facing += 1;
-        }       
-    }
-    return 3;
-    //move forward
-}
-
-void pid(int *wall_array){
-    //PID controller. Use this to control the speed of the motors
-    //To be done : Make the bot move forward for a certain amount of time and then check if its moving straight or not. If not, then we can use the previous turn to correct the error.
-
-    int error = wall_array[0] - wall_array[2];
-    int pv = kp*error + kd*(error-lasterror);
-    lasterror = error;
-    Motor_SetSpeed(min(max(OPTIMUM_SPEED + pv, 0), 200), min(max(OPTIMUM_SPEED - pv, 0), 200));
-}
-
-void position_init(){
-    //Initializes the bot so that  it is at the center of the cell.
-    //Sensor values of left, right, back should be equal
-    //May not be possible if we are not using a back sensor. 
-    //In that case, we can use the front sensor to check if the bot is at the center of the cell, but pid should be enough to stabilize itself so shouldnt be a problem.
+    return 0;
 }
