@@ -106,7 +106,7 @@ int minimum_value_accessible_neighbors(short int arena_map[16][16], short int po
 
         if (arena_map[pos[0]][pos[1]]>sortedArray[i]){ //Checking if current node is greater than minimum accessible neighbors.
             // if (wall_array[min_cost[i]] == 0){ //Checking if node is accessible
-            if (wall_data[pos[0]][pos[1]][i] == 0){ //Checking if node is accessible
+            if (wall_data[pos[0]][pos[1]][min_cost[i]] == 0){ //Checking if node is accessible
                 return min_cost[i];
             }   
             else{
@@ -115,7 +115,7 @@ int minimum_value_accessible_neighbors(short int arena_map[16][16], short int po
         }
 
         else{
-            if (wall_data[pos[0]][pos[1]][i] == 0){ //Checking if node is accessible
+            if (wall_data[pos[0]][pos[1]][min_cost[i]] == 0){ //Checking if node is accessible
                 switch(min_cost[i]){ //assigning smallest_accessible_regardless to the smallest non-accessible neighbor
                     case 0:
                         *smallest_accessible_regardless = arena_map[pos[0]][pos[1] - 1];
@@ -155,7 +155,7 @@ void rearrange_map(short int ** arena_map, short int base_pos[2]){
             arena_map[poped[0]][poped[1]] = small + 1;
 
             for (int i = 0; i<4; i++){ //pushing accessible neighbors to queue
-                if (wall_data[pos[0]][pos[1]][i] == 0){
+                if (wall_data[poped[0]][poped[1]][i] == 0){
                     switch (i){
                         case (0):
                             queue_push(poped[0], poped[1] - 1);
