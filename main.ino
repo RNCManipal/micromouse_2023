@@ -1,11 +1,6 @@
-/*
-    2 Wheels
-    5 IR sensors
-*/
-
 #include "bot_functions.h"
 
-int arena_map[16][16] = {
+short int arena_map[16][16] = {
     {14, 13, 12, 11, 10, 9, 8, 7, 7, 8, 9, 10, 11, 12, 13, 14},
     {13, 12, 11, 10,  9, 8, 7, 6, 6, 7, 8,  9, 10, 11, 12, 13},
     {12, 11, 10,  9,  8, 7, 6, 5, 5, 6, 7,  8,  9, 10, 11, 12},
@@ -23,10 +18,21 @@ int arena_map[16][16] = {
     {13, 12, 11, 10,  9, 8, 7, 6, 6, 7, 8,  9, 10, 11, 12, 13},
     {14, 13, 12, 11, 10, 9, 8, 7, 7, 8, 9, 10, 11, 12, 13, 14},
 }; //arena node weight map
-int position[2] = {15, 0}; //Current position of bot
+
+bool wall_data[16][16][4];
+
+short int position[2] = {15, 0}; //Current position of bot
 int facing = 1; // 0 = East, 1 = North, 2 = West, 3 = South
 
 void setup(){
+
+    for (int i =0 ; i<16; i++){  //intializing wall array to 0 initially
+        for (int j =0; j<16; j++){
+            for (int k = 0; k<4; k++){
+                wall_data[i][j][k] = 0;
+            }
+        }
+    }
 
     Serial.begin(96000);
 }

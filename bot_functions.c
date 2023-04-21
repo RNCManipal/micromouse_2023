@@ -23,7 +23,7 @@ void swap(int *x, int *y){
     *y = temp;
 }
 
-int* minimum_cost(int arena_map[16][16], int bot_pos[2], int *sortedArray){
+int* minimum_cost(short int arena_map[16][16], short int bot_pos[2], int *sortedArray){
     /*
         returns array with [0,1,2,3] as [l,s,r,b] in ascending order of their weights
         Function verified
@@ -91,10 +91,10 @@ int* minimum_cost(int arena_map[16][16], int bot_pos[2], int *sortedArray){
 
 int* detect_wall(){
     /*returns an array [l, s, r, b] with 1 if wall is detected and 0 if not
-    Needs to maintain position wrt compass. A gyroscope can be used*/
+    Needs to maintain position wrt compass. A gyroscope can be used*/ 
 }
 
-int minimum_value_accessible_neighbors(int arena_map[16][16], int pos[2], int wall_array[4], int *smallest_accessible_regardless){
+int minimum_value_accessible_neighbors(short int arena_map[16][16], short int pos[2], int *smallest_accessible_regardless){
     /*returns 0 for left, 1 for forward, 2 for right, 3 for back, -1 if no minimum accessible neighbors
     Function verified
     */
@@ -105,7 +105,8 @@ int minimum_value_accessible_neighbors(int arena_map[16][16], int pos[2], int wa
     for (int i =0; i< 4; i++){
 
         if (arena_map[pos[0]][pos[1]]>sortedArray[i]){ //Checking if current node is greater than minimum accessible neighbors.
-            if (wall_array[min_cost[i]] == 0){ //Checking if node is accessible
+            // if (wall_array[min_cost[i]] == 0){ //Checking if node is accessible
+            if (wall_data[pos[0]][pos[1]][i] == 0){ //Checking if node is accessible
                 return min_cost[i];
             }   
             else{
@@ -114,7 +115,7 @@ int minimum_value_accessible_neighbors(int arena_map[16][16], int pos[2], int wa
         }
 
         else{
-            if (wall_array[min_cost[i]] == 0){ //Checking if node is accessible
+            if (wall_data[pos[0]][pos[1]][i] == 0){ //Checking if node is accessible
                 switch(min_cost[i]){ //assigning smallest_accessible_regardless to the smallest non-accessible neighbor
                     case 0:
                         *smallest_accessible_regardless = arena_map[pos[0]][pos[1] - 1];
@@ -137,26 +138,24 @@ int minimum_value_accessible_neighbors(int arena_map[16][16], int pos[2], int wa
     }
 }
 
-void rearrange_map(int ** arena_map, int base_pos[2]){
+void rearrange_map(short int ** arena_map, short int base_pos[2]){
     //Changes value of map node cost in case the current node has a strictly lower cost than all of its accessible neighbors. Function verified
 
     queue_push(base_pos[0], base_pos[1]); //pushing base node to queue
-    int *poped;
+    short int *poped;
     int min_access;
-    int *wall_array;
     int small;
 
     while (!queue_empty()){
         poped = queue_pop();
-        wall_array = detect_wall();
-        min_access = minimum_value_accessible_neighbors(arena_map, poped, wall_array, &small); //returns index of minimum value accessible neighbor
+        min_access = minimum_value_accessible_neighbors(arena_map, poped, &small); //returns index of minimum value accessible neighbor
 
         if (min_access == -1){ //if all accessible neighbors have higher cost than current node
 
             arena_map[poped[0]][poped[1]] = small + 1;
 
             for (int i = 0; i<4; i++){ //pushing accessible neighbors to queue
-                if (wall_array[i] == 0){
+                if (wall_data[pos[0]][pos[1]][i] == 0){
                     switch (i){
                         case (0):
                             queue_push(poped[0], poped[1] - 1);
@@ -183,16 +182,15 @@ void rearrange_map(int ** arena_map, int base_pos[2]){
     }
 }
 
-int direction_wrt_compass(int **arena_map, int bot_pos[2], int algorithm){
+int direction_wrt_compass(short int **arena_map, short int bot_pos[2], int algorithm){
     // Checks which direction to move in wrt to a compass. i.e 0=>East, 1=>North, 2=>West, 3=>South. Function unverified
 
     int *smallest_value;
-    int *wall_array = detect_wall();
     int small;
     int min_access;
 
     do{
-        min_access = minimum_value_accessible_neighbors(arena_map, bot_pos, wall_array, &small);
+        min_access = minimum_value_accessible_neighbors(arena_map, bot_pos, &small);
         
         if (algorithm == 0){ //lsrb
             switch (min_access){
@@ -237,7 +235,7 @@ int direction_wrt_compass(int **arena_map, int bot_pos[2], int algorithm){
 }
 
 
-int direction_wrt_bot(int **arena_map, int bot_pos[2], int algorithm, int *facing){
+int direction_wrt_bot(short int **arena_map, short int bot_pos[2], int algorithm, int *facing){
     /*Decide which direction the both should move in from its perspective*/
     int direction = direction_wrt_compass(arena_map, bot_pos,algorithm);
 

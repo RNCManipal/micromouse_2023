@@ -10,7 +10,7 @@ void swap(int *x, int *y){
     *y = temp;
 }
 
-int* minimum_cost(int arena_map[16][16], int bot_pos[2], int *sortedArray){
+int* minimum_cost(short int arena_map[16][16], short int bot_pos[2], int *sortedArray){
     /*
         returns array with [0,1,2,3] as [l,s,r,b] in ascending order of their weights
         Function 90% verified
@@ -76,7 +76,7 @@ int* minimum_cost(int arena_map[16][16], int bot_pos[2], int *sortedArray){
     return return_value;
 }
 
-int minimum_value_accessible_neighbors(int arena_map[16][16], int pos[2], int wall_array[4], int *smallest_accessible_regardless){
+int minimum_value_accessible_neighbors(short int arena_map[16][16], short int pos[2], int wall_array[4], int *smallest_accessible_regardless){
     /*returns 0 for left, 1 for forward, 2 for right, 3 for back, -1 if no minimum accessible neighbors
     Function unverified
     */
@@ -118,11 +118,13 @@ int minimum_value_accessible_neighbors(int arena_map[16][16], int pos[2], int wa
         }
     }
 }
+
 int init =0;
-void rearrange_map(int arena_map[16][16], int base_pos[2]){
+
+void rearrange_map(short int arena_map[16][16], short int base_pos[2]){
     //Changes value of map node cost in case the current node has a strictly lower cost than all of its accessible neighbors. Function unverified
     queue_push(base_pos[0], base_pos[1]); //pushing base node to queue
-    int *poped;
+    short int *poped;
     int min_access;
     int *wall_array = calloc (4, sizeof(int));
     int small;
@@ -177,7 +179,7 @@ void rearrange_map(int arena_map[16][16], int base_pos[2]){
 
 
 int main(){
-int arena_map[16][16] = {
+short int arena_map[16][16] = {
     {14, 14, 12, 11, 10, 9, 8, 7, 7, 8, 9, 10, 11, 12, 13, 14},
     {5, 12, 13, 10,  9, 8, 7, 6, 6, 7, 8,  9, 10, 11, 12, 13},
     {12, 14, 10,  9,  8, 7, 6, 5, 5, 6, 7,  8,  9, 10, 11, 12},
@@ -195,7 +197,7 @@ int arena_map[16][16] = {
     {13, 12, 11, 10,  9, 8, 7, 6, 6, 7, 8,  9, 10, 11, 12, 13},
     {14, 10, 12, 11, 10, 9, 8, 7, 7, 8, 9, 10, 11, 12, 13, 14},
 }; //arena node weight map
-    int position[2] = {1, 0};
+    short int position[2] = {1, 0};
     initialize_queue();
 
     rearrange_map(arena_map, position);

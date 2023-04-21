@@ -3,11 +3,11 @@
 // #include "bot_functions.h"
 #define SIZE 260
 
-int ** queue;
+short int ** queue;
 int first, last;
 
 void initialize_queue(){
-    queue = calloc (SIZE, sizeof(int*));
+    queue = calloc (SIZE, sizeof(short int*));
     first = 0;
     last = 0;
 }
@@ -26,19 +26,19 @@ int queue_full(){
     return 0;
 }
 
-void queue_push (int x, int y){
+void queue_push (short int x, short int y){
     if (queue_full()){
         return;
     }
 
-    queue[last] = calloc (2, sizeof(int));
+    queue[last] = calloc (2, sizeof(short int));
     queue[last][0] = x;
     queue[last][1] = y;
     last = (last+1)%SIZE;
     // printf("Done");
 }
 
-int* queue_pop (){
+short int* queue_pop (){
 
     if (queue_empty()){
         return NULL;
@@ -46,7 +46,7 @@ int* queue_pop (){
 
     // printf("\n%d %d", queue[first][0], queue[first][1]);
 
-    int *temp = queue[first];
+    short int *temp = queue[first];
 
     // printf("\n%d %d", temp[0], temp[1]);
 
