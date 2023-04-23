@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
-// #include "bot_functions.h"
+#include <stdbool.h>
+#include "bot_functions.h"
+#define MAX_SIZE 4 
 #define SIZE 260
 
 short int ** queue;
@@ -82,32 +84,100 @@ void display(){
     }                     
 }
 
-// int main(){
-//     initialize_queue();
-//     int ch = 0;
-//     int *temp;
+// Map
 
-//     while (ch!=3){
-//         printf ("\n1. Push 2. Pop 3. Exit\n");
+typedef struct {
+    int key;
+    int value;
+} KeyValuePair;
 
-//         scanf (" %d", &ch);
+// Struct for the map
+typedef struct {
+    KeyValuePair *pairs[MAX_SIZE];
+    int size;
+} Map;
 
-//         if (ch == 1){
-//             int x, y;
-//             scanf ("%d %d", &x, &y);
-//             queue_push (x, y);
-//         }
+// Initialize the map
+Map *map_init() {
+    Map *map = malloc(sizeof(Map));
+    map->size = 0;
+    return map;
+}
 
-//         if (ch == 2){
-//             temp = queue_pop();
-//             if (temp == NULL){
-//                 printf ("\nQueue is empty\n");
-//             }
-//             else{
-//                 printf ("\nPopped %d %d\n", temp[0], temp[1]);
-//             }
-//         }
+// Add a key-value pair to the map
+void map_put(Map *map, int key, int value) {
+    if (map->size == MAX_SIZE) {
+        printf("Map is full!\n");
+        return;
+    }
+    KeyValuePair *pair = malloc(sizeof(KeyValuePair));
+    pair->key = key;
+    pair->value = value;
+    map->pairs[map->size] = pair;
+    map->size++;
+}
 
-//         display(); 
-//     }
-// }
+// Get the value associated with a given key
+int map_get(Map *map, int key) {
+    int i;
+    for (i = 0; i < map->size; i++) {
+        if (map->pairs[i]->key == key) {
+            return map->pairs[i]->value;
+        }
+    }
+    printf("Key not found in map!\n");
+    return -1;
+}
+
+// Update the value associated with a given key
+void map_update(Map *map, int key, int value) {
+    int i;
+    for (i = 0; i < map->size; i++) {
+        if (map->pairs[i]->key == key) {
+            map->pairs[i]->value = value;
+            return;
+        }
+    }
+    printf("Key not found in map!\n");
+}
+
+int main(){
+    initialize_queue();
+    int ch = 0;
+    int *temp;
+
+    while (ch!=3){
+        printf ("\n1. Push 2. Pop 3. Exit\n");
+
+        scanf (" %d", &ch);
+
+        if (ch == 1){
+            int x, y;
+            scanf ("%d %d", &x, &y);
+            queue_push (x, y);
+        }
+
+        if (ch == 2){
+            temp = queue_pop();
+            if (temp == NULL){
+                printf ("\nQueue is empty\n");
+            }
+            else{
+                printf ("\nPopped %d %d\n", temp[0], temp[1]);
+            }
+        }
+
+        display(); 
+    }
+    
+    // Map *map = map_init();
+    // map_put(map, 1, 10);
+    // map_put(map, 2, 20);
+    // printf("%d\n", map_get(map, 1));
+    // printf("%d\n", map_get(map, 2));
+    // map_update(map, 1, 100);
+    // printf("%d\n", map_get(map, 1));
+    // printf("%d\n", map_get(map, 3));
+
+    return 0;
+}

@@ -25,5 +25,9 @@
 // int* queue_pop ();
 // void display();
 
+// Map
+void map_put(Map *map, int key, int value)
+int map_get(Map *map, int key)
+void map_update(Map *map, int key, int value)
 
 // #endif
