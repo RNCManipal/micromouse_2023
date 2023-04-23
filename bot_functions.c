@@ -106,10 +106,16 @@ int* detect_wall(int face, int **arena_map, int bot_pos[] ){
     }*/
     
     // Head sensor 1
+    Map *map = map_init();
     int  detection_s0 = sensor_output();
     int  detection_s1 = sensor_output();
     int  detection_s2 = sensor_output();
     int  detection_s3 = sensor_output();
+    map_put(map, 0, 0);
+    map_put(map, 1, 0);
+    map_put(map, 2, 0);
+    map_put(map, 3, 0);
+
 
     switch(facing){
         case 0:
