@@ -1,15 +1,15 @@
-#include<stdio.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include "bot_functions.h"
-#define SIZE 5
 #define MAX_SIZE 4 
+#define SIZE 260
 
-int ** queue;
+short int ** queue;
 int first, last;
 
 void initialize_queue(){
-    queue = calloc (SIZE, sizeof(int*));
+    queue = calloc (SIZE, sizeof(short int*));
     first = 0;
     last = 0;
 }
@@ -28,29 +28,29 @@ int queue_full(){
     return 0;
 }
 
-void queue_push (int x, int y){
+void queue_push (short int x, short int y){
     if (queue_full()){
         return;
     }
 
-    queue[last] = calloc (2, sizeof(int));
+    queue[last] = calloc (2, sizeof(short int));
     queue[last][0] = x;
     queue[last][1] = y;
     last = (last+1)%SIZE;
-    printf("Done");
+    // printf("Done");
 }
 
-int* queue_pop (){
+short int* queue_pop (){
 
     if (queue_empty()){
         return NULL;
     }
 
-    printf("\n%d %d", queue[first][0], queue[first][1]);
+    // printf("\n%d %d", queue[first][0], queue[first][1]);
 
-    int *temp = queue[first];
+    short int *temp = queue[first];
 
-    printf("\n%d %d", temp[0], temp[1]);
+    // printf("\n%d %d", temp[0], temp[1]);
 
     first = (first + 1)%SIZE;
 
@@ -59,7 +59,7 @@ int* queue_pop (){
 
 void display(){
     if (queue_empty()){
-        printf ("\nQueue is empty\n");
+        // printf ("\nQueue is empty\n");
         return;
     }
     

@@ -23,10 +23,10 @@ void swap(int *x, int *y){
     *y = temp;
 }
 
-int* minimum_cost(int **arena_map, int bot_pos[2]){
+int* minimum_cost(short int arena_map[16][16], short int bot_pos[2], int *sortedArray){
     /*
-        returns array with [0,1,2,3] as [l,s,r,b] in ascending order
-        Function 90% verified
+        returns array with [0,1,2,3] as [l,s,r,b] in ascending order of their weights
+        Function verified
     */
 
    //Getting values of neighbors
@@ -73,19 +73,19 @@ int* minimum_cost(int **arena_map, int bot_pos[2]){
     for (int i  =0 ; i<4; i++){
         smallest = i;
         for (int j = i +1;j<4; j++){
-            if (temp_arr[i]>temp_arr[j]){
+            if (temp_arr[smallest]>temp_arr[j]){
                 smallest = j;
-            }
-            else if (temp_arr[i] == temp_arr[j]){ //if two values are equal, l, s, r, b order is maintained
-                if (return_value[i] > return_value[j]){
-                    swap(&return_value[i], &return_value[j]);
-                }
             }
         }
 
         swap(&temp_arr[i], &temp_arr[smallest]);
         swap(&return_value[i], &return_value[smallest]);
     }
+
+    for (int i =0 ; i<4; i++){ //copying sorted array to sortedArray
+        sortedArray[i] = temp_arr[i];
+    }
+
     return return_value;
 }
 
@@ -104,6 +104,7 @@ int* detect_wall(int face, int **arena_map, int bot_pos[] ){
         right: sensor pointing towards right,
         bottom: sensor towards bottom
     }*/
+    
     // Head sensor 1
     int  detection_s0 = sensor_output();
     int  detection_s1 = sensor_output();
@@ -178,26 +179,68 @@ int* detect_wall(int face, int **arena_map, int bot_pos[] ){
       return return_value
 }
 
-void rearrange_map(int ** arena_map, int base_pos[2]){
-    //Changes value of map node cost in case the current node has a strictly lower cost than all of its accessible neighbors. Function unverified
+int minimum_value_accessible_neighbors(short int arena_map[16][16], short int pos[2], int *smallest_accessible_regardless){
+    /*returns 0 for left, 1 for forward, 2 for right, 3 for back, -1 if no minimum accessible neighbors
+    Function verified
+    */
+
+    int sortedArray[4]; 
+    int *min_cost = minimum_cost(arena_map, pos, sortedArray);
+
+    for (int i =0; i< 4; i++){
+
+        if (arena_map[pos[0]][pos[1]]>sortedArray[i]){ //Checking if current node is greater than minimum accessible neighbors.
+            // if (wall_array[min_cost[i]] == 0){ //Checking if node is accessible
+            if (wall_data[pos[0]][pos[1]][min_cost[i]] == 0){ //Checking if node is accessible
+                return min_cost[i];
+            }   
+            else{
+                continue;
+            }
+        }
+
+        else{
+            if (wall_data[pos[0]][pos[1]][min_cost[i]] == 0){ //Checking if node is accessible
+                switch(min_cost[i]){ //assigning smallest_accessible_regardless to the smallest non-accessible neighbor
+                    case 0:
+                        *smallest_accessible_regardless = arena_map[pos[0]][pos[1] - 1];
+                        break;
+                    case 1:
+                        *smallest_accessible_regardless = arena_map[pos[0] - 1][pos[1]];
+                        break;
+                    case 2:
+                        *smallest_accessible_regardless = arena_map[pos[0]][pos[1] + 1];
+                        break;
+                    case 3:
+                        *smallest_accessible_regardless = arena_map[pos[0] + 1][pos[1]];
+                        break;
+                    default:
+                        break;
+                }
+                return -1;
+            }
+        }
+    }
+}
+
+void rearrange_map(short int ** arena_map, short int base_pos[2]){
+    //Changes value of map node cost in case the current node has a strictly lower cost than all of its accessible neighbors. Function verified
 
     queue_push(base_pos[0], base_pos[1]); //pushing base node to queue
-    int *poped;
+    short int *poped;
     int min_access;
-    int *wall_array;
     int small;
 
     while (!queue_empty()){
         poped = queue_pop();
-        wall_array = detect_wall();
-        min_access = minimum_value_accessible_neighbors(arena_map, poped, wall_array, &small); //returns index of minimum value accessible neighbor
+        min_access = minimum_value_accessible_neighbors(arena_map, poped, &small); //returns index of minimum value accessible neighbor
 
         if (min_access == -1){ //if all accessible neighbors have higher cost than current node
 
             arena_map[poped[0]][poped[1]] = small + 1;
 
             for (int i = 0; i<4; i++){ //pushing accessible neighbors to queue
-                if (wall_array[i] == 0){
+                if (wall_data[poped[0]][poped[1]][i] == 0){
                     switch (i){
                         case (0):
                             queue_push(poped[0], poped[1] - 1);
@@ -224,58 +267,15 @@ void rearrange_map(int ** arena_map, int base_pos[2]){
     }
 }
 
-int minimum_value_accessible_neighbors(int ** arena_map, int *pos, int *wall_array, int *smallest_accessible_regardless){
-    /*returns 0 for left, 1 for forward, 2 for right, 3 for back, -1 if no minimum accessible neighbors
-    Function unverified
-    */
-
-    int *min_cost = minimum_cost(arena_map, pos);
-
-    for (int i =0; i< 4; i++){
-
-        if (arena_map[pos[0]][pos[1]]>min_cost[i]){ //Checking if current node is greater than minimum accessible neighbors.
-            if (wall_array[min_cost[i]] == 0){ //Checking if node is accessible
-                return i;
-            }   
-            else{
-                continue;
-            }
-        }
-
-        else{
-            if (wall_array[min_cost[i]] == 0){ //Checking if node is accessible
-                switch(i){ //assigning smallest_accessible_regardless to the smallest non-accessible neighbor
-                    case 0:
-                        *smallest_accessible_regardless = arena_map[pos[0]][pos[1] - 1];
-                        break;
-                    case 1:
-                        *smallest_accessible_regardless = arena_map[pos[0] - 1][pos[1]];
-                        break;
-                    case 2:
-                        *smallest_accessible_regardless = arena_map[pos[0]][pos[1] + 1];
-                        break;
-                    case 3:
-                        *smallest_accessible_regardless = arena_map[pos[0] + 1][pos[1]];
-                        break;
-                    default:
-                        break;
-                }
-                return -1;
-            }
-        }
-    }
-}
-
-int direction_wrt_compass(int **arena_map, int bot_pos[2], int algorithm){
+int direction_wrt_compass(short int **arena_map, short int bot_pos[2], int algorithm){
     // Checks which direction to move in wrt to a compass. i.e 0=>East, 1=>North, 2=>West, 3=>South. Function unverified
 
     int *smallest_value;
-    int *wall_array = detect_wall();
     int small;
     int min_access;
 
     do{
-        min_access = minimum_value_accessible_neighbors(arena_map, bot_pos, wall_array, &small);
+        min_access = minimum_value_accessible_neighbors(arena_map, bot_pos, &small);
         
         if (algorithm == 0){ //lsrb
             switch (min_access){
@@ -320,7 +320,7 @@ int direction_wrt_compass(int **arena_map, int bot_pos[2], int algorithm){
 }
 
 
-int direction_wrt_bot(int **arena_map, int bot_pos[2], int algorithm, int *facing){4
+int direction_wrt_bot(short int **arena_map, short int bot_pos[2], int algorithm, int *facing){
     /*Decide which direction the both should move in from its perspective*/
     int direction = direction_wrt_compass(arena_map, bot_pos,algorithm);
 

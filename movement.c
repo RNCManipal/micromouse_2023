@@ -3,11 +3,6 @@
 #include <Arduino.h>
 #include "bot_functions.h"
 
-/*
-    in1, in2 => motor 1
-    in3, in4 => motor 2 
-*/
-
 void forward(){
   digitalWrite(mtrpin1_1, HIGH);
   digitalWrite(mtrpin1_2, LOW);
