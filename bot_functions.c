@@ -89,9 +89,93 @@ int* minimum_cost(int **arena_map, int bot_pos[2]){
     return return_value;
 }
 
-int* detect_wall(){
+int* detect_wall(int face, int **arena_map, int bot_pos[] ){
     /*returns an array [l, s, r, b] with 1 if wall is detected and 0 if not
-    Needs to maintain position wrt compass. A gyroscope can be used*/
+                       [0,1,2,3]
+    ____ s1____    
+    |          |    
+   s 0        s 2   
+    |____s3____|
+
+    // define a data structue map
+    /*{
+        left: sensor no point towords left,
+        top: sensor pointing towards top,
+        right: sensor pointing towards right,
+        bottom: sensor towards bottom
+    }*/
+    // Head sensor 1
+    int  detection_s0 = sensor_output();
+    int  detection_s1 = sensor_output();
+    int  detection_s2 = sensor_output();
+    int  detection_s3 = sensor_output();
+
+    switch(facing){
+        case 0:
+            //  Assuming the the head sensor pointing to left
+            //update the map
+            /*{
+                0: s1,
+                1: s2,
+                2: s3,
+                3: s0
+            }*/
+            map_update(map, 0, detection_s1);
+            map_update(map, 1, detection_s2);
+            map_update(map, 2, detection_s3);
+            map_update(map, 3, detection_s0);
+        break;
+        case 1:
+            //  Assuming the the head sensor pointing to top
+            //update the map
+            /*{
+                0: s0,
+                1: s1,
+                2: s2,
+                3: s3
+            }*/ 
+            ap_update(map, 0, detection_s0);
+            map_update(map, 1, detection_s1);
+            map_update(map, 2, detection_s2);
+            map_update(map, 3, detection_s3);
+        break;
+        case 2:
+            //  Assuming the the head sensor pointing to right
+            //update the map
+            /*{
+                0: s3,
+                1: s0,
+                2: s1,
+                3: s2
+            }*/ 
+            ap_update(map, 0, detection_s3);
+            map_update(map, 1, detection_s0);
+            map_update(map, 2, detection_s1);
+            map_update(map, 3, detection_s2);
+        break;
+        case 3:
+            //  Assuming the the head sensor pointing to bottom
+            //update the map
+            /*{
+                0: s2,
+                1: s3,
+                2: s0,
+                3: s1
+            }*/ 
+            ap_update(map, 0, detection_s2);
+            map_update(map, 1, detection_s3);
+            map_update(map, 2, detection_s0);
+            map_update(map, 3, detection_s1);
+        break;
+
+    }
+
+      // fill the return array with keys values of the map accordingly in the return array
+      for(int i =0;i<4;i++){
+        return_value[i]= map_get(map,i);
+      }
+
+      return return_value
 }
 
 void rearrange_map(int ** arena_map, int base_pos[2]){

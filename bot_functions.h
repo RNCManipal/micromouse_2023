@@ -16,7 +16,7 @@ void brake(int in1, int in2, int in3, int in4);
 void backward(int in1, int in2, int in3, int in4);
 void right(int in1, int in2, int in3, int in4);
 void left(int in1, int in2, int in3, int in4);
-void turn_around(int in1, int in2, int in3, int in4){;
+void turn_around(int in1, int in2, int in3, int in4);
 
 void initialize_queue();
 int queue_empty();
@@ -25,5 +25,9 @@ void queue_push (int x, int y);
 int* queue_pop ();
 void display();
 
+// Map
+void map_put(Map *map, int key, int value)
+int map_get(Map *map, int key)
+void map_update(Map *map, int key, int value)
 
 #endif
