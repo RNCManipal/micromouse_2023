@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include "bot_functions.h"
 #define MAX_SIZE 4 
 #define SIZE 260
 
@@ -141,43 +140,43 @@ void map_update(Map *map, int key, int value) {
     printf("Key not found in map!\n");
 }
 
-int main(){
-    initialize_queue();
-    int ch = 0;
-    int *temp;
+// int main(){
+//     initialize_queue();
+//     int ch = 0;
+//     int *temp;
 
-    while (ch!=3){
-        printf ("\n1. Push 2. Pop 3. Exit\n");
+//     while (ch!=3){
+//         printf ("\n1. Push 2. Pop 3. Exit\n");
 
-        scanf (" %d", &ch);
+//         scanf (" %d", &ch);
 
-        if (ch == 1){
-            int x, y;
-            scanf ("%d %d", &x, &y);
-            queue_push (x, y);
-        }
+//         if (ch == 1){
+//             int x, y;
+//             scanf ("%d %d", &x, &y);
+//             queue_push (x, y);
+//         }
 
-        if (ch == 2){
-            temp = queue_pop();
-            if (temp == NULL){
-                printf ("\nQueue is empty\n");
-            }
-            else{
-                printf ("\nPopped %d %d\n", temp[0], temp[1]);
-            }
-        }
+//         if (ch == 2){
+//             temp = queue_pop();
+//             if (temp == NULL){
+//                 printf ("\nQueue is empty\n");
+//             }
+//             else{
+//                 printf ("\nPopped %d %d\n", temp[0], temp[1]);
+//             }
+//         }
 
-        display(); 
-    }
+//         display(); 
+//     }
     
-    // Map *map = map_init();
-    // map_put(map, 1, 10);
-    // map_put(map, 2, 20);
-    // printf("%d\n", map_get(map, 1));
-    // printf("%d\n", map_get(map, 2));
-    // map_update(map, 1, 100);
-    // printf("%d\n", map_get(map, 1));
-    // printf("%d\n", map_get(map, 3));
+//     // Map *map = map_init();
+//     // map_put(map, 1, 10);
+//     // map_put(map, 2, 20);
+//     // printf("%d\n", map_get(map, 1));
+//     // printf("%d\n", map_get(map, 2));
+//     // map_update(map, 1, 100);
+//     // printf("%d\n", map_get(map, 1));
+//     // printf("%d\n", map_get(map, 3));
 
-    return 0;
-}
+//     return 0;
+// }

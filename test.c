@@ -1,6 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include "data_structures.c"
+
+bool wall_data[16][16][4];
 
 void swap(int *x, int *y){
     //Swaps values of two  numbers x and y. 
@@ -13,7 +16,7 @@ void swap(int *x, int *y){
 int* minimum_cost(short int arena_map[16][16], short int bot_pos[2], int *sortedArray){
     /*
         returns array with [0,1,2,3] as [l,s,r,b] in ascending order of their weights
-        Function 90% verified
+        Function verified
     */
 
    //Getting values of neighbors
@@ -60,7 +63,7 @@ int* minimum_cost(short int arena_map[16][16], short int bot_pos[2], int *sorted
     for (int i  =0 ; i<4; i++){
         smallest = i;
         for (int j = i +1;j<4; j++){
-            if (temp_arr[smallest]>temp_arr[j]){ // 9 8 5 5
+            if (temp_arr[smallest]>temp_arr[j]){
                 smallest = j;
             }
         }
@@ -76,9 +79,9 @@ int* minimum_cost(short int arena_map[16][16], short int bot_pos[2], int *sorted
     return return_value;
 }
 
-int minimum_value_accessible_neighbors(short int arena_map[16][16], short int pos[2], int wall_array[4], int *smallest_accessible_regardless){
+int minimum_value_accessible_neighbors(short int arena_map[16][16], short int pos[2], int *smallest_accessible_regardless){
     /*returns 0 for left, 1 for forward, 2 for right, 3 for back, -1 if no minimum accessible neighbors
-    Function unverified
+    Function verified
     */
 
     int sortedArray[4]; 
@@ -87,7 +90,8 @@ int minimum_value_accessible_neighbors(short int arena_map[16][16], short int po
     for (int i =0; i< 4; i++){
 
         if (arena_map[pos[0]][pos[1]]>sortedArray[i]){ //Checking if current node is greater than minimum accessible neighbors.
-            if (wall_array[min_cost[i]] == 0){ //Checking if node is accessible
+            // if (wall_array[min_cost[i]] == 0){ //Checking if node is accessible
+            if (wall_data[pos[0]][pos[1]][min_cost[i]] == 0){ //Checking if node is accessible
                 return min_cost[i];
             }   
             else{
@@ -96,7 +100,7 @@ int minimum_value_accessible_neighbors(short int arena_map[16][16], short int po
         }
 
         else{
-            if (wall_array[min_cost[i]] == 0){ //Checking if node is accessible
+            if (wall_data[pos[0]][pos[1]][min_cost[i]] == 0){ //Checking if node is accessible
                 switch(min_cost[i]){ //assigning smallest_accessible_regardless to the smallest non-accessible neighbor
                     case 0:
                         *smallest_accessible_regardless = arena_map[pos[0]][pos[1] - 1];
@@ -119,38 +123,24 @@ int minimum_value_accessible_neighbors(short int arena_map[16][16], short int po
     }
 }
 
-int init =0;
-
 void rearrange_map(short int arena_map[16][16], short int base_pos[2]){
-    //Changes value of map node cost in case the current node has a strictly lower cost than all of its accessible neighbors. Function unverified
+    //Changes value of map node cost in case the current node has a strictly lower cost than all of its accessible neighbors. Function verified
+
     queue_push(base_pos[0], base_pos[1]); //pushing base node to queue
     short int *poped;
     int min_access;
-    int *wall_array = calloc (4, sizeof(int));
     int small;
 
     while (!queue_empty()){
         poped = queue_pop();
-        if(init == 0){
-            init = 1;
-            wall_array[0] = 0;
-            wall_array[1] = 0;
-            wall_array[2] = 0;
-            wall_array[3] = 1;
-        }
-        else{
-            wall_array[0] = 0;
-            wall_array[1] = 0;
-            wall_array[2] = 0;
-            wall_array[3] = 0;
-        }
-        min_access = minimum_value_accessible_neighbors(arena_map, poped, wall_array, &small); //returns index of minimum value accessible neighbor
+        min_access = minimum_value_accessible_neighbors(arena_map, poped, &small); //returns index of minimum value accessible neighbor
+
         if (min_access == -1){ //if all accessible neighbors have higher cost than current node
 
             arena_map[poped[0]][poped[1]] = small + 1;
 
             for (int i = 0; i<4; i++){ //pushing accessible neighbors to queue
-                if (wall_array[i] == 0){
+                if (wall_data[poped[0]][poped[1]][i] == 0){
                     switch (i){
                         case (0):
                             queue_push(poped[0], poped[1] - 1);
@@ -179,10 +169,31 @@ void rearrange_map(short int arena_map[16][16], short int base_pos[2]){
 
 
 int main(){
-short int arena_map[16][16] = {
-    {14, 14, 12, 11, 10, 9, 8, 7, 7, 8, 9, 10, 11, 12, 13, 14},
-    {5, 12, 13, 10,  9, 8, 7, 6, 6, 7, 8,  9, 10, 11, 12, 13},
-    {12, 14, 10,  9,  8, 7, 6, 5, 5, 6, 7,  8,  9, 10, 11, 12},
+
+    // int wall_array[16][16][4] = {
+    //     {
+            
+    //     }
+    // };
+
+    for (int i =0 ; i<16; i++){  //intializing wall array to 0 initially
+        for (int j =0; j<16; j++){
+            for (int k = 0; k<4; k++){
+                wall_data[i][j][k] = 0;
+            }
+        }
+    }
+
+    wall_data[14][1][0] = 0;
+    wall_data[14][1][1] = 1;
+    wall_data[14][1][2] = 1;
+    wall_data[14][1][3] = 0;
+
+
+    short int arena_map[16][16] = {
+    {14, 13, 12, 11, 10, 9, 8, 7, 7, 8, 9, 10, 11, 12, 13, 14},
+    {13, 12, 11, 10,  9, 8, 7, 6, 6, 7, 8,  9, 10, 11, 12, 13},
+    {12, 11, 10,  9,  8, 7, 6, 5, 5, 6, 7,  8,  9, 10, 11, 12},
     {11, 10,  9,  8,  7, 6, 5, 4, 4, 5, 6,  7,  8,  9, 10, 11},
     {10,  9,  8,  7,  6, 5, 4, 3, 3, 4, 5,  6,  7,  8,  9, 10},
     { 9,  8,  7,  6,  5, 4, 3, 2, 2, 3, 4,  5,  6,  7,  8, 9 },
@@ -195,18 +206,21 @@ short int arena_map[16][16] = {
     {11, 10,  9,  8,  7, 6, 5, 4, 4, 5, 6,  7,  8,  9, 10, 11},
     {12, 11, 10,  9,  8, 7, 6, 5, 5, 6, 7,  8,  9, 10, 11, 12},
     {13, 12, 11, 10,  9, 8, 7, 6, 6, 7, 8,  9, 10, 11, 12, 13},
-    {14, 10, 12, 11, 10, 9, 8, 7, 7, 8, 9, 10, 11, 12, 13, 14},
-}; //arena node weight map
-    short int position[2] = {1, 0};
+    {14, 14, 15, 11, 10, 9, 8, 7, 7, 8, 9, 10, 11, 12, 13, 14},
+    }; //arena node weight map
+
+    short int position[2] = {14, 1};
     initialize_queue();
 
-    rearrange_map(arena_map, position);
+    rearrange_map(arena_map,position);
 
-    for (int i = 0; i<16; i++){
-        for (int j = 0; j<16; j++){
+    for (int i =0 ; i<16; i++){
+        for (int j =0; j<16; j++){
             printf("%d ", arena_map[i][j]);
         }
         printf("\n");
     }
+
+    
     return 0;
 }

@@ -1,33 +1,35 @@
-// #ifndef BOT_FUNC_H
-// #define BOT_FUNC_H
-// #include <Arduino.h>
+#ifndef BOT_FUNC_H
+#define BOT_FUNC_H
+#include <Arduino.h>
 
-// void swap(int *x, int *y);
-// int* minimum_cost(int **arena_map, int bot_pos[2]);
-// int* detect_wall();
-// void rearrange_map(int ** arena_map, int base_pos[2]);
-// int minimum_value_accessible_neighbors(int ** arena_map, int *pos, int *wall_array, int *smallest_accessible_regardless);
-// int direction_wrt_compass(int **arena_map, int bot_pos[2], int algorithm);
-// int direction_wrt_bot(int **arena_map, int bot_pos[2], int algorithm, int *facing);
+//Flood-fill bot_functions.c
+int* minimum_cost(short int arena_map[16][16], short int bot_pos[2], int *sortedArray);
+int* detect_wall(int face);
+int minimum_value_accessible_neighbors(short int arena_map[16][16], short int pos[2], int *smallest_accessible_regardless);
+void rearrange_map(short int arena_map[16][16], short int base_pos[2]);
+int direction_wrt_compass(short int arena_map[16][16], short int bot_pos[2]);
+int direction_wrt_bot(short int arena_map[16][16], short int bot_pos[2], int *facing);
 
+//movement.c
+void forward();
+void brake();
+void backward();
+void right();
+void left();
+void turn_around();
+void Motor_SetSpeed(int spdL, int spdR);
 
-// void forward(int in1, int in2, int in3, int in4);
-// void brake(int in1, int in2, int in3, int in4);
-// void backward(int in1, int in2, int in3, int in4);
-// void right(int in1, int in2, int in3, int in4);
-// void left(int in1, int in2, int in3, int in4);
-// void turn_around(int in1, int in2, int in3, int in4){;
-
-// void initialize_queue();
-// int queue_empty();
-// int queue_full();
-// void queue_push (int x, int y);
-// int* queue_pop ();
-// void display();
+//data_structures.c
+//Queue
+void initialize_queue();
+int queue_empty();
+int queue_full();
+void queue_push (short int x, short int y);
+int* queue_pop ();
 
 // Map
-void map_put(Map *map, int key, int value)
-int map_get(Map *map, int key)
-void map_update(Map *map, int key, int value)
+void map_put(Map *map, int key, int value);
+int map_get(Map *map, int key);
+void map_update(Map *map, int key, int value);
 
-// #endif
+#endif

@@ -89,7 +89,7 @@ int* minimum_cost(short int arena_map[16][16], short int bot_pos[2], int *sorted
     return return_value;
 }
 
-int* detect_wall(int face, int **arena_map, int bot_pos[] ){
+int* detect_wall(int face){
     /*returns an array [l, s, r, b] with 1 if wall is detected and 0 if not
                        [0,1,2,3]
     ____ s1____    
@@ -105,13 +105,14 @@ int* detect_wall(int face, int **arena_map, int bot_pos[] ){
         bottom: sensor towards bottom
     }*/
     
+    Map* map=init();
     // Head sensor 1
     int  detection_s0 = sensor_output();
     int  detection_s1 = sensor_output();
     int  detection_s2 = sensor_output();
     int  detection_s3 = sensor_output();
 
-    switch(facing){
+    switch(face){
         case 0:
             //  Assuming the the head sensor pointing to left
             //update the map
@@ -168,15 +169,16 @@ int* detect_wall(int face, int **arena_map, int bot_pos[] ){
             map_update(map, 2, detection_s0);
             map_update(map, 3, detection_s1);
         break;
-
     }
+
+    int *return_value = calloc (4, sizeof(int)); //array to be returned
 
       // fill the return array with keys values of the map accordingly in the return array
       for(int i =0;i<4;i++){
         return_value[i]= map_get(map,i);
       }
 
-      return return_value
+      return return_value;
 }
 
 int minimum_value_accessible_neighbors(short int arena_map[16][16], short int pos[2], int *smallest_accessible_regardless){
@@ -223,7 +225,7 @@ int minimum_value_accessible_neighbors(short int arena_map[16][16], short int po
     }
 }
 
-void rearrange_map(short int ** arena_map, short int base_pos[2]){
+void rearrange_map(short int arena_map[16][16], short int base_pos[2]){
     //Changes value of map node cost in case the current node has a strictly lower cost than all of its accessible neighbors. Function verified
 
     queue_push(base_pos[0], base_pos[1]); //pushing base node to queue
@@ -267,7 +269,7 @@ void rearrange_map(short int ** arena_map, short int base_pos[2]){
     }
 }
 
-int direction_wrt_compass(short int **arena_map, short int bot_pos[2], int algorithm){
+int direction_wrt_compass(short int arena_map[16][16], short int bot_pos[2]){
     // Checks which direction to move in wrt to a compass. i.e 0=>East, 1=>North, 2=>West, 3=>South. Function unverified
 
     int *smallest_value;
@@ -320,7 +322,7 @@ int direction_wrt_compass(short int **arena_map, short int bot_pos[2], int algor
 }
 
 
-int direction_wrt_bot(short int **arena_map, short int bot_pos[2], int algorithm, int *facing){
+int direction_wrt_bot(short int arena_map[16][16], short int bot_pos[2], int *facing){
     /*Decide which direction the both should move in from its perspective*/
     int direction = direction_wrt_compass(arena_map, bot_pos,algorithm);
 
@@ -354,16 +356,6 @@ int direction_wrt_bot(short int **arena_map, short int bot_pos[2], int algorithm
     }
     return 3;
     //move forward
-}
-
-void pid(int *wall_array){
-    //PID controller. Use this to control the speed of the motors
-    //To be done : Make the bot move forward for a certain amount of time and then check if its moving straight or not. If not, then we can use the previous turn to correct the error.
-
-    int error = wall_array[0] - wall_array[2];
-    int pv = kp*error + kd*(error-lasterror);
-    lasterror = error;
-    Motor_SetSpeed(min(max(OPTIMUM_SPEED + pv, 0), 200), min(max(OPTIMUM_SPEED - pv, 0), 200));
 }
 
 void position_init(){
