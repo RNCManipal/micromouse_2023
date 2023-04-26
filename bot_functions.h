@@ -2,15 +2,19 @@
 #define BOT_FUNC_H
 #include <Arduino.h>
 
-//Flood-fill bot_functions.c
+
+//bot_functions.c
+//Flood-fill Code
+void swap(int *x, int *y);
 int* minimum_cost(short int arena_map[16][16], short int bot_pos[2], int *sortedArray);
-int* detect_wall(int face);
+void detect_wall(int face, int pos[2]);
 int minimum_value_accessible_neighbors(short int arena_map[16][16], short int pos[2], int *smallest_accessible_regardless);
 void rearrange_map(short int arena_map[16][16], short int base_pos[2]);
 int direction_wrt_compass(short int arena_map[16][16], short int bot_pos[2]);
-int direction_wrt_bot(short int arena_map[16][16], short int bot_pos[2], int *facing);
+int direction_wrt_bot(short int arena_map[16][16], short int bot_pos[2], int facing);
 
 //movement.c
+//Bot Movement functions
 void forward();
 void brake();
 void backward();

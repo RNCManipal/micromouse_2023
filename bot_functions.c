@@ -89,7 +89,7 @@ int* minimum_cost(short int arena_map[16][16], short int bot_pos[2], int *sorted
     return return_value;
 }
 
-int* detect_wall(int face){
+void detect_wall(int face, int pos[2]){
     /*returns an array [l, s, r, b] with 1 if wall is detected and 0 if not
                        [0,1,2,3]
     ____ s1____    
@@ -177,14 +177,10 @@ int* detect_wall(int face){
         break;
     }
 
-    int *return_value = calloc (4, sizeof(int)); //array to be returned
-
       // fill the return array with keys values of the map accordingly in the return array
       for(int i =0;i<4;i++){
-        return_value[i]= map_get(map,i);
+        wall_data[pos[0]][pos[1]][i] = map_get(map,i);
       }
-
-      return return_value;
 }
 
 int minimum_value_accessible_neighbors(short int arena_map[16][16], short int pos[2], int *smallest_accessible_regardless){
@@ -328,40 +324,26 @@ int direction_wrt_compass(short int arena_map[16][16], short int bot_pos[2]){
 }
 
 
-int direction_wrt_bot(short int arena_map[16][16], short int bot_pos[2], int *facing){
+int direction_wrt_bot(short int arena_map[16][16], short int bot_pos[2], int facing){
     /*Decide which direction the both should move in from its perspective*/
     int direction = direction_wrt_compass(arena_map, bot_pos,algorithm);
 
-    if (*facing == direction){
+    if (facing == direction){
         //move forward
         return 1;
     }
 
-    else if (((*facing+1)%4 == direction)){
+    else if (((facing+1)%4 == direction)){
         //turn right
-        *facing = direction;
         return 2;
     }
 
-    else if (*facing == (direction+1)%4){
+    else if (facing == (direction+1)%4){
         //turn left 
-        *facing = direction;
         return 0;
     }
 
-    while (*facing != direction){
-        if (*facing > direction){
-            //turn left
-            *facing -= 1;
-        }
-
-        else if (*facing < direction){
-            //turn right
-            *facing += 1;
-        }       
-    }
     return 3;
-    //move forward
 }
 
 void position_init(){
