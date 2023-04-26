@@ -18,13 +18,12 @@ void p2p_pid(int dist){
     //let encoder giving 'x' number of counts per rotation
     double setpnt_counts=(num_of_rotatn*x); // number of counts required to reach the set point(inshort this is our setpoint)
 
-    int count =0 , last_error = 0, error = 0, pv = 0;
-    int b;
-
+    int count =0; 
+    double last_error = 0, error = 0;
+    double pv = 0;
     double maxerror = kp1*setpnt_counts + kd1*(setpnt_count);
 
     while (1){
-
         count = readEncoder(count);
 
         error =(setpnt_counts)-(count); //x is the number of encoder counts per revolution
@@ -63,6 +62,42 @@ void straight_pid(){
         Motor_SetSpeed(min(max(OPTIMUM_SPEED - pv, 0), 200), min(max(OPTIMUM_SPEED + pv, 0), 200));
     }
 
+}
+
+void turn(int angle){
+
+     double lasterror=0;
+     const int COUNTS_PER_ROTATION ; //put the value here
+     const float WHEEL_DIAMETER ; //put the value here
+
+     double theta_in_rad =(angle*3.14159265359)/180;
+
+     double distance_turned_for_given_angle=( theta_in_rad * WHEEL_DIAMETER);
+     int count  =0 ; //encoder count
+     double error =0, lasterror =0, pv =0;
+
+     double encoder_Counts_required=((COUNTS_PER_ROTATION * distance_turned_for_given_angle )/(3.14159265359 * WHEEL_DIAMETER);
+    
+
+     while(1){  // might be correction here
+       count = readEncoder(count);
+
+       double setpnt_counts =encoder_Counts_required;
+    
+       error=(setpnt_counts)-(count);
+       pv = kp3*error + kd3*(error-lasterror);
+       lasterror = error;
+
+
+       if (pv >= -0.1 && pv<=0.1){
+            break;  
+        }
+        else if (pv<0){
+           Motor_SetSpeed();  
+        } 
+        else{
+            Motor_SetSpeed();  
+        }
 }
 
 short int arena_map[16][16] = {

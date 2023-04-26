@@ -142,7 +142,7 @@ int* detect_wall(int face){
                 2: s2,
                 3: s3
             }*/ 
-            ap_update(map, 0, detection_s0);
+            map_update(map, 0, detection_s0);
             map_update(map, 1, detection_s1);
             map_update(map, 2, detection_s2);
             map_update(map, 3, detection_s3);
@@ -156,7 +156,7 @@ int* detect_wall(int face){
                 2: s1,
                 3: s2
             }*/ 
-            ap_update(map, 0, detection_s3);
+            map_update(map, 0, detection_s3);
             map_update(map, 1, detection_s0);
             map_update(map, 2, detection_s1);
             map_update(map, 3, detection_s2);
@@ -170,7 +170,7 @@ int* detect_wall(int face){
                 2: s0,
                 3: s1
             }*/ 
-            ap_update(map, 0, detection_s2);
+            map_update(map, 0, detection_s2);
             map_update(map, 1, detection_s3);
             map_update(map, 2, detection_s0);
             map_update(map, 3, detection_s1);
