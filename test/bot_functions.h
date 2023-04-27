@@ -2,6 +2,16 @@
 #define BOT_FUNC_H
 #include <Arduino.h>
 
+typedef struct {
+    int key;
+    int value;
+} KeyValuePair;
+
+// Struct for the map
+typedef struct {
+    KeyValuePair *pairs[MAX_SIZE];
+    int size;
+} Map;
 
 //bot_functions.c
 //Flood-fill Code

@@ -1,29 +1,6 @@
-#define OPTIMUM_SPEED 150
-
-int algorithm = 0;
-
-int kp1, ki1, kd1;
-int kp2, ki2, kd2;
-int kp3, ki3, kd3;
-
-/* Input pins */
-int motor1_0 ;
-int motor1_1 ;
-int motor2_0 ;
-int motor2_1 ;
-
-int motor_speed ;
-
-int sens_pin1 ;
-int sens_pin2 ;
-int sens_pin3 ;
-int sens_pin4 ;
-int sens_pin5 ;
-
-int enable1 ;
-int enable2 ;
-
-
+extern "C"{
+    #include "bot_functions.h"
+};
 
 bool wall_data[16][16][4];
 
@@ -90,11 +67,11 @@ void straight_pid(){
     //Makes use of the logic that the left and right sensor values should be same at all points of time
     //Integrate with p2p pid later
 
-    int sensor_left, sensor_right,error, lasterror = 0, pv;
+    int sensor_left, sensor_right, error, lasterror = 0, pv;
     while (1)
     {
-        sensor_left = sensor_output();
-        sensor_right = sensor_output();
+        sensor_left = sensor_output(sens_trig0, sens_echo0);
+        sensor_right = sensor_output(sens_trig2, sens_echo2);
 
         error = sensor_left - sensor_right;
         pv = kp2*error + kd2*(error-lasterror);
@@ -164,10 +141,6 @@ short int arena_map[16][16] = {
 short int position[2] = {15, 0}; //Current position of bot
 int facing = 1; // 0 = East, 1 = North, 2 = West, 3 = South
 int found = 0;
-
-extern "C"{
-    #include "bot_functions.h"
-};
 
 void loop(){
 
