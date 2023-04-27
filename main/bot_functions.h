@@ -1,5 +1,6 @@
 #ifndef BOT_FUNC_H
 #define BOT_FUNC_H
+
 #include <Arduino.h>
 #define MAX_SIZE 4 
 #define OPTIMUM_SPEED 150
@@ -22,8 +23,7 @@ int sens_trig1, sens_echo1;
 int sens_trig2, sens_echo2;
 int sens_trig3, sens_echo3;
 
-int enable1 ;
-int enable2 ;
+int ENCA, ENCB, ENCC, ENCD;
 
 typedef struct {
     int key;
@@ -35,6 +35,7 @@ typedef struct {
     KeyValuePair *pairs[MAX_SIZE];
     int size;
 } Map;
+int count;
 
 
 //bot_functions.c
@@ -70,5 +71,11 @@ Map *map_init();
 void map_put(Map *map, int key, int value);
 int map_get(Map *map, int key);
 void map_update(Map *map, int key, int value);
+
+//PID Codes
+//pid.c
+void p2p_pid(int dist);
+void straight_pid();
+void turn(int angle);
 
 #endif
