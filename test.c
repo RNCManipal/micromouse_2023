@@ -79,7 +79,7 @@ int* minimum_cost(short int arena_map[16][16], short int bot_pos[2], int *sorted
     return return_value;
 }
 
-int minimum_value_accessible_neighbors(short int arena_map[16][16], short int pos[2], int *smallest_accessible_regardless){
+int minimum_value_accessible_neighbors(short int arena_map[16][16], short int pos[2], int *smallest_accessible_regardless,int detect_wall[][16][4]){
     /*returns 0 for left, 1 for forward, 2 for right, 3 for back, -1 if no minimum accessible neighbors
     Function verified
     */
@@ -123,7 +123,7 @@ int minimum_value_accessible_neighbors(short int arena_map[16][16], short int po
     }
 }
 
-void rearrange_map(short int arena_map[16][16], short int base_pos[2]){
+void rearrange_map(short int arena_map[16][16], short int base_pos[2],int wall_data[][16][4]){
     //Changes value of map node cost in case the current node has a strictly lower cost than all of its accessible neighbors. Function verified
 
     queue_push(base_pos[0], base_pos[1]); //pushing base node to queue
