@@ -4,8 +4,7 @@
 
 
 void p2p_pid(int dist){
-    //PID Controller. Used to control the speed of the bot. Function unverified
-    //Attach Interrupt
+    //PID Controller. Used to control the speed of the bot. Function unverified\
 
     float num_of_rotatn= (dist/10.681415); // number of rotations of wheel required to complete given distance
     //let encoder giving 'x' number of counts per rotation
@@ -23,7 +22,8 @@ void p2p_pid(int dist){
         lasterror = error;
 
         map(pv, -maxerror, maxerror, -255, 255);
-        if (pv >= -0.1 && pv<=0.1){
+        if (pv >= -0.1 && pv<=0.1){  //Assuming lower and upper thresholds of speed of motors are 50, 200 respectively
+            brake();
             break;
         }
         else if ( pv > 0 ){
@@ -52,14 +52,19 @@ void straight_pid(){
         pv = kp2*error + kd2*(error-lasterror);
         lasterror = error;
 
+        if (pv >= -0.1 && pv<=0.1){
+            brake();
+            break;
+        }
+
         Motor_SetSpeed(min(max(OPTIMUM_SPEED - pv, 0), 200), min(max(OPTIMUM_SPEED + pv, 0), 200));
     }
 
 }
 
 void turn(int angle){
+    //PID controller for turning the bot by a given angle
 
-     double lasterror=0;
      const int COUNTS_PER_ROTATION ; //put the value here
      const float WHEEL_DIAMETER ; //put the value here
 
@@ -79,7 +84,8 @@ void turn(int angle){
            lasterror = error;
 
             map(pv, -maxerror, maxerror, -255, 255);
-            if (pv >= -0.1 && pv<=0.1){
+            if (pv >= -0.1 && pv<=0.1){ //upper and lower threshold limits of pv
+                brake();
                 break;  
             }
             else if (pv>0){
@@ -100,15 +106,18 @@ void turn(int angle){
            lasterror = error;
 
             map(pv, -maxerror, maxerror, -255, 255);
-            
+
            if (pv >= -0.1 && pv<=0.1){
-                break;  
+                brake();
+                break;
             }
-            else if (pv<0){
-               Motor_SetSpeed();  
+            else if (pv>0){
+                int speed= min(max(pv, 50), 200);
+               Motor_SetSpeed(speed, -speed);
             } 
             else{
-                Motor_SetSpeed();  
+                int speed= min(max(pv, -200), -50);
+                Motor_SetSpeed(speed, -speed);
             }
         }
     }
