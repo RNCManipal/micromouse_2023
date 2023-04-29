@@ -9,8 +9,6 @@ void p2p_pid(int dist){
     //let encoder giving 'x' number of counts per rotation
     double setpnt_counts=(rotatn_req )* (170); // number of counts required to reach the set point(inshort this is our setpoint)
     double count =0; 
-    double kp1; //Fill up the values here 
-    double kd1; //Fill up the values here 
     double lasterror = 0, error = 0;
     double pv = 0;
     while (1)
@@ -23,12 +21,12 @@ void p2p_pid(int dist){
         }
         else if ( pv > 0 ){
             int speed= min(max(pv, 1), 200);
-            count++;
+            
            Motor_SetSpeed(speed, speed); //Set the parameters later. these parameters are speed of left and right wheel and will be for forward motion since pv>=0
            
         }
         else{
-            count--;
+            
             int speed= min(max(pv, -200), -1);
             Motor_SetSpeed(speed, speed); //Set the parameters later. these parameters are speed of left and right wheel and will be for forward motion since pv>=0
           
