@@ -9,33 +9,31 @@ void p2p_pid(int dist){
     //let encoder giving 'x' number of counts per rotation
     double setpnt_counts=(rotatn_req )* (170); // number of counts required to reach the set point(inshort this is our setpoint)
     double count =0; 
-    double kp1=1;
-    double kd1=0.9;
+    double kp1; //Fill up the values here 
+    double kd1; //Fill up the values here 
     double lasterror = 0, error = 0;
     double pv = 0;
     while (1)
        { error =(setpnt_counts)-(count); //x is the number of encoder counts per revolution
         pv = kp1*error + kd1*(error-lasterror);
         lasterror = error;
-        printf("Distance to travel %f\n", error);
         if (pv >= -0.1 && pv<=0.1){  //Assuming lower and upper thresholds of speed of motors are 50, 200 respectively
-            //brake();
-           printf("break %f", pv);
+           brake();
            break;
         }
         else if ( pv > 0 ){
             int speed= min(max(pv, 1), 200);
             count++;
-           // Motor_SetSpeed(speed, speed); //Set the parameters later. these parameters are speed of left and right wheel and will be for forward motion since pv>=0
-           printf("elseif %d", speed);
+           Motor_SetSpeed(speed, speed); //Set the parameters later. these parameters are speed of left and right wheel and will be for forward motion since pv>=0
+           
         }
         else{
             count--;
             int speed= min(max(pv, -200), -1);
-            //Motor_SetSpeed(speed, speed); //Set the parameters later. these parameters are speed of left and right wheel and will be for forward motion since pv>=0
-          printf("el %d", speed);
+            Motor_SetSpeed(speed, speed); //Set the parameters later. these parameters are speed of left and right wheel and will be for forward motion since pv>=0
+          
         }
-        printf("\n");
+        
         }
 }
 
