@@ -4,37 +4,39 @@
 
 
 void p2p_pid(int dist){
-    //PID Controller. Used to control the speed of the bot. Function unverified\
-
-    float num_of_rotatn= (dist/10.681415); // number of rotations of wheel required to complete given distance
+    //PID Controller. Used to control the speed of the bot. Function unverified
+    double rotatn_req= (dist/10.681415); // number of rotations of wheel required to complete given distance
     //let encoder giving 'x' number of counts per rotation
-    double setpnt_counts=(num_of_rotatn*x); // number of counts required to reach the set point(inshort this is our setpoint)
-
-    count =0; 
-    double last_error = 0, error = 0;
+    double setpnt_counts=(rotatn_req )* (170); // number of counts required to reach the set point(inshort this is our setpoint)
+    double count =0; 
+    double kp1=1;
+    double kd1=0.9;
+    double lasterror = 0, error = 0;
     double pv = 0;
-    double maxerror = kp1*setpnt_counts + kd1*(setpnt_count);
-
-    while (1){
-
-        error =(setpnt_counts)-(count); //x is the number of encoder counts per revolution
+    while (1)
+       { error =(setpnt_counts)-(count); //x is the number of encoder counts per revolution
         pv = kp1*error + kd1*(error-lasterror);
         lasterror = error;
-
-        map(pv, -maxerror, maxerror, -255, 255);
+        printf("Distance to travel %f\n", error);
         if (pv >= -0.1 && pv<=0.1){  //Assuming lower and upper thresholds of speed of motors are 50, 200 respectively
-            brake();
-            break;
+            //brake();
+           printf("break %f", pv);
+           break;
         }
         else if ( pv > 0 ){
-            int speed= min(max(pv, 50), 200);
-            Motor_SetSpeed(speed, speed); //Set the parameters later. these parameters are speed of left and right wheel and will be for forward motion since pv>=0
+            int speed= min(max(pv, 1), 200);
+            count++;
+           // Motor_SetSpeed(speed, speed); //Set the parameters later. these parameters are speed of left and right wheel and will be for forward motion since pv>=0
+           printf("elseif %d", speed);
         }
         else{
-            int speed= min(max(pv, -200), -50);
-            Motor_SetSpeed(speed, speed); //Set the parameters later. these parameters are speed of left and right wheel and will be for forward motion since pv>=0
+            count--;
+            int speed= min(max(pv, -200), -1);
+            //Motor_SetSpeed(speed, speed); //Set the parameters later. these parameters are speed of left and right wheel and will be for forward motion since pv>=0
+          printf("el %d", speed);
         }
-    } 
+        printf("\n");
+        }
 }
 
 void straight_pid(){
