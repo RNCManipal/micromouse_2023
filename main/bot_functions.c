@@ -108,6 +108,15 @@ int sensor_output(int sonartrig, int sonarecho){
     return distance;
 }
 
+bool thresHold(int threshold,int distance){
+    if (distance > thresHold){
+        return 0;
+    }
+    else{
+        return 1;
+    }
+}
+
 void detect_wall(int face, int pos[2],bool wall_data[][16][4]){
     /*returns an array [l, s, r, b] with 1 if wall is detected and 0 if not
                        [0,1,2,3]
@@ -126,10 +135,12 @@ void detect_wall(int face, int pos[2],bool wall_data[][16][4]){
     
     // Head sensor 1
     Map *map = map_init();
-    int  detection_s0 = sensor_output(sens_trig0, sens_echo0);
-    int  detection_s1 = sensor_output(sens_trig1, sens_echo1);
-    int  detection_s2 = sensor_output(sens_trig2, sens_echo2);
-    int  detection_s3 = sensor_output(sens_trig3, sens_echo3);
+    int threshold=3 ;//Dummp number
+
+    int  detection_s0 = thresHold(threshold,sensor_output(sens_trig0, sens_echo0));
+    int  detection_s1 = thresHold(threshold,sensor_output(sens_trig1, sens_echo1));
+    int  detection_s2 = thresHold(threshold,sensor_output(sens_trig2, sens_echo2));
+    int  detection_s3 = thresHold(threshold,sensor_output(sens_trig3, sens_echo3));
 
     map_put(map, 0, 0);
     map_put(map, 1, 0);
