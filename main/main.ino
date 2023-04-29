@@ -67,7 +67,7 @@ void loop(){
                 break;
             }
 
-            detect_wall(facing, position); //Detect walls on current node
+            detect_wall(facing, position,bool wall_data[][16][4]); //Detect walls on current node
 
             int turn_direction = direction_wrt_bot(arena_map, position, facing); //Decide direction to turn to so as to face the correct node
             switch (turn_direction)
