@@ -13,7 +13,13 @@ void p2p_pid(int dist){
     double pv = 0;
     while (1)
        { error =(setpnt_counts)-(count); //x is the number of encoder counts per revolution
-        pv = kp1*error + kd1*(error-lasterror);
+
+      if(lasterror==0){       // this condition is used to remove intial high gain in velocity 
+        pv = kp1 * error ;
+      }else{
+        pv = kp1 * error + kd1 * (error - lasterror);
+      }
+       
         lasterror = error;
         if (pv >= -0.1 && pv<=0.1){  //Assuming lower and upper thresholds of speed of motors are 50, 200 respectively
            brake();
