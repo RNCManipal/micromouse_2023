@@ -108,8 +108,8 @@ int sensor_output(int sonartrig, int sonarecho){
     return distance;
 }
 
-bool thresHold(int threshold,int distance){
-    if (distance > thresHold){
+bool thresHold(int distance){
+    if (distance > threshold){
         return 0;
     }
     else{
@@ -135,18 +135,16 @@ void detect_wall(int face, int pos[2],bool wall_data[][16][4]){
     
     // Head sensor 1
     Map *map = map_init();
-    int threshold=3 ;//Dummp number
 
-    int  detection_s0 = thresHold(threshold,sensor_output(sens_trig0, sens_echo0));
-    int  detection_s1 = thresHold(threshold,sensor_output(sens_trig1, sens_echo1));
-    int  detection_s2 = thresHold(threshold,sensor_output(sens_trig2, sens_echo2));
-    int  detection_s3 = thresHold(threshold,sensor_output(sens_trig3, sens_echo3));
+    int  detection_s0 = thresHold(sensor_output(sens_trig0, sens_echo0));
+    int  detection_s1 = thresHold(sensor_output(sens_trig1, sens_echo1));
+    int  detection_s2 = thresHold(sensor_output(sens_trig2, sens_echo2));
+    int  detection_s3 = thresHold(sensor_output(sens_trig3, sens_echo3));
 
     map_put(map, 0, 0);
     map_put(map, 1, 0);
     map_put(map, 2, 0);
     map_put(map, 3, 0);
-
 
     switch(face){
         case 0:
@@ -267,7 +265,7 @@ void rearrange_map(short int arena_map[16][16], short int base_pos[2],bool wall_
 
     while (!queue_empty()){
         poped = queue_pop();
-        min_access = minimum_value_accessible_neighbors(arena_map, poped, &small); //returns index of minimum value accessible neighbor
+        min_access = minimum_value_accessible_neighbors(arena_map, poped, &small, wall_data); //returns index of minimum value accessible neighbor
 
         if (min_access == -1){ //if all accessible neighbors have higher cost than current node
 
@@ -301,7 +299,7 @@ void rearrange_map(short int arena_map[16][16], short int base_pos[2],bool wall_
     }
 }
 
-int direction_wrt_compass(short int arena_map[16][16], short int bot_pos[2]){
+int direction_wrt_compass(short int arena_map[16][16], short int bot_pos[2], bool wall_data[][16][4]){
     // Checks which direction to move in wrt to a compass. i.e 0=>East, 1=>North, 2=>West, 3=>South. Function unverified
 
     int *smallest_value;
@@ -309,7 +307,7 @@ int direction_wrt_compass(short int arena_map[16][16], short int bot_pos[2]){
     int min_access;
 
     do{
-        min_access = minimum_value_accessible_neighbors(arena_map, bot_pos, &small);
+        min_access = minimum_value_accessible_neighbors(arena_map, bot_pos, &small, wall_data);
 
         switch (min_access){  //lsrb if nodes are equal
             case 0://move east
@@ -325,16 +323,16 @@ int direction_wrt_compass(short int arena_map[16][16], short int bot_pos[2]){
                 return 3;
                 break;
             case -1:
-                rearrange_map(arena_map, bot_pos);
+                rearrange_map(arena_map, bot_pos, wall_data);
         }
 
     }while (min_access != -1);
 }
 
 
-int direction_wrt_bot(short int arena_map[16][16], short int bot_pos[2], int facing){
+int direction_wrt_bot(short int arena_map[16][16], short int bot_pos[2], int facing, bool wall_data[][16][4]){
     /*Decide which direction the both should move in from its perspective*/
-    int direction = direction_wrt_compass(arena_map, bot_pos);
+    int direction = direction_wrt_compass(arena_map, bot_pos, wall_data);
 
     if (facing == direction){
         //move forward

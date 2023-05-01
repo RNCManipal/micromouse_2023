@@ -2,7 +2,7 @@ extern "C"{
     #include "bot_functions.h"
 };
 
-bool wall_data[16][16][4];
+// bool wall_data[16][16][4];
 
 void setup(){
 
@@ -61,15 +61,19 @@ void loop(){
     if (button_clicked()){
         while (!found){
 
-            if (button_clicked()){
-                found = 1;    //Shortest path found and maze solved
-                delay(20000);
+            if (arena_map[position[0]][position[1]] == 0){ //Found the center
+                found = 1;
                 break;
             }
 
-            detect_wall(facing, position,bool wall_data[][16][4]); //Detect walls on current node
+            if (button_clicked()){ // Time over, restart from beginning
+                brake();
+                break;
+            }
 
-            int turn_direction = direction_wrt_bot(arena_map, position, facing); //Decide direction to turn to so as to face the correct node
+            detect_wall(facing, position,wall_data[][16][4]); //Detect walls on current node
+
+            int turn_direction = direction_wrt_bot(arena_map, position, facing, wall_data); //Decide direction to turn to so as to face the correct node
             switch (turn_direction)
             {
                 case 0:
