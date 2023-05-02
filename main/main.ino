@@ -1,8 +1,37 @@
+
 extern "C"{
     #include "bot_functions.h"
 };
 
-// bool wall_data[16][16][4];
+//Variable declaration 
+
+int kp1, ki1, kd1;
+int kp2, ki2, kd2;
+int kp3, ki3, kd3;
+int threshold;
+int counts_per_rotation = 170;
+
+/* Input pins */
+int mtrpin1_1 ;
+int mtrpin1_2 ;
+int mtrpin2_1 ;
+int mtrpin2_2 ;
+
+int mtrspd1 ;
+int mtrspd2 ;
+
+int sens_trig0, sens_echo0;
+int sens_trig1, sens_echo1;
+int sens_trig2, sens_echo2;
+int sens_trig3, sens_echo3;
+
+int ENCA, ENCB, ENCC, ENCD;
+
+int buttonpin ;
+bool wall_data[16][16][4];
+
+
+int count = 0;
 
 void readEncoder (){
     int b = digitalRead(ENCB);
@@ -11,11 +40,9 @@ void readEncoder (){
     } else{
        count--;
     }
-    return count;
 }
 
 void setup(){
-
     for (int i =0 ; i<16; i++){  //intializing wall array to 0 initially
         for (int j =0; j<16; j++){
             for (int k = 0; k<4; k++){

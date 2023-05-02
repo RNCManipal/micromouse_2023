@@ -9,33 +9,33 @@
 #define OPTIMUM_SPEED 150
 #define WHEEL_DIAMETER 10.681415
 
-int kp1, ki1, kd1;
-int kp2, ki2, kd2;
-int kp3, ki3, kd3;
-int threshold;
-int counts_per_rotation = 170;
+extern int kp1, ki1, kd1;
+extern int kp2, ki2, kd2;
+extern int kp3, ki3, kd3;
+extern int threshold;
+extern int counts_per_rotation;
 
 /* Input pins */
-int mtrpin1_1 ;
-int mtrpin1_2 ;
-int mtrpin2_1 ;
-int mtrpin2_2 ;
+extern int mtrpin1_1 ;
+extern int mtrpin1_2 ;
+extern int mtrpin2_1 ;
+extern int mtrpin2_2 ;
 
-int mtrspd1 ;
-int mtrspd2 ;
+extern int mtrspd1 ;
+extern int mtrspd2 ;
 
-int sens_trig0, sens_echo0;
-int sens_trig1, sens_echo1;
-int sens_trig2, sens_echo2;
-int sens_trig3, sens_echo3;
+extern int sens_trig0, sens_echo0;
+extern int sens_trig1, sens_echo1;
+extern int sens_trig2, sens_echo2;
+extern int sens_trig3, sens_echo3;
 
-int ENCA, ENCB, ENCC, ENCD;
+extern int ENCA, ENCB, ENCC, ENCD;
 
-int buttonpin ;
+extern int buttonpin ;
 
 //Constants
-int count;
-bool wall_data[16][16][4];
+extern int count;
+extern bool wall_data[16][16][4];
 
 
 // Data Types
