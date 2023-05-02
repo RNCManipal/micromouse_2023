@@ -4,6 +4,16 @@ extern "C"{
 
 // bool wall_data[16][16][4];
 
+void readEncoder (){
+    int b = digitalRead(ENCB);
+    if(b > 0){
+       count++; //count is current encoder count 
+    } else{
+       count--;
+    }
+    return count;
+}
+
 void setup(){
 
     for (int i =0 ; i<16; i++){  //intializing wall array to 0 initially
@@ -16,16 +26,6 @@ void setup(){
     attachInterrupt(digitalPinToInterrupt(ENCA),readEncoder,RISING);
 
     Serial.begin(96000);
-}
-
-void readEncoder (){
-    int b = digitalRead(ENCB);
-    if(b > 0){
-       count++; //count is current encoder count 
-    } else{
-       count--;
-    }
-    return count;
 }
 
 
@@ -58,7 +58,7 @@ void loop(){
     position[0] = 15;
     position[1] = 0; //Initializing bot information
 
-    if (button_clicked()){
+    if (digitalRead(buttonpin)){
         while (!found){
 
             if (arena_map[position[0]][position[1]] == 0){ //Found the center
@@ -66,12 +66,12 @@ void loop(){
                 break;
             }
 
-            if (button_clicked()){ // Time over, restart from beginning
+            if (digitalRead(buttonpin)){ // Time over, restart from beginning
                 brake();
                 break;
             }
 
-            detect_wall(facing, position,wall_data[][16][4]); //Detect walls on current node
+            detect_wall(facing, position,wall_data); //Detect walls on current node
 
             int turn_direction = direction_wrt_bot(arena_map, position, facing, wall_data); //Decide direction to turn to so as to face the correct node
             switch (turn_direction)

@@ -13,7 +13,7 @@ int kp1, ki1, kd1;
 int kp2, ki2, kd2;
 int kp3, ki3, kd3;
 int threshold;
-int counts_per_rotation;
+int counts_per_rotation = 170;
 
 /* Input pins */
 int mtrpin1_1 ;
@@ -30,6 +30,8 @@ int sens_trig2, sens_echo2;
 int sens_trig3, sens_echo3;
 
 int ENCA, ENCB, ENCC, ENCD;
+
+int buttonpin ;
 
 //Constants
 int count;
@@ -87,7 +89,8 @@ void map_update(Map *map, int key, int value);
 //PID Codes
 //pid.c
 void p2p_pid(int dist);
-void straight_pid();
+void sens_pid();
 void turn(int angle);
+void composite_pid(int dist);
 
 #endif

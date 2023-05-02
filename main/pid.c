@@ -1,4 +1,4 @@
-#include <stdio.h>
+#include <Arduino.h>
 #include <stdlib.h>
 #include "bot_functions.h"
 
@@ -87,7 +87,6 @@ void turn(int angle)
             pv = kp3 * error + kd3 * (error - lasterror);
             lasterror = error;
 
-            map(pv, -maxerror, maxerror, -255, 255);
             if (pv >= -0.1 && pv <= 0.1)
             { // upper and lower threshold limits of pv
                 brake();
@@ -114,8 +113,6 @@ void turn(int angle)
             pv = kp3 * error + kd3 * (error - lasterror);
             lasterror = error;
 
-            map(pv, -maxerror, maxerror, -255, 255);
-
             if (pv >= -0.1 && pv <= 0.1)
             {
                 brake();
@@ -135,7 +132,7 @@ void turn(int angle)
     }
 }
 
-void composite_pid(){
+void composite_pid(int dist){
     // PID controller combining p2p_pid and sens_pid
 
     double lasterror_p2p =0, lasterror_sens = 0;
@@ -154,10 +151,10 @@ void composite_pid(){
         }
 
         { //sens_pid
-            int sensl - sensor_output(sens_trig0, sens_echo0);
-            int sensr - sensor_output(sens_trig2, sens_echo2);
+            int sensl = sensor_output(sens_trig0, sens_echo0);
+            int sensr = sensor_output(sens_trig2, sens_echo2);
 
-            if (thresHold(sensl) == 0 || thresHold(sens2) == 0){
+            if (thresHold(sensl) == 0 || thresHold(sensr) == 0){
                 pv_sens = 0;
             }
             else{
