@@ -70,6 +70,8 @@ void sens_pid()
 void turn(int angle)
 {
     // PID controller for turning the bot by a given angle
+    if((angle<6)&&(angle>(-6))&& angle!=0)  // condition if the angle is between 6 and -6
+    { angle = 360+ angle;} 
     double theta_in_rad = (angle * 3.14159265359) / 180;
 
     double distance_turned_for_given_angle = (theta_in_rad * WHEEL_DIAMETER);
@@ -120,12 +122,12 @@ void turn(int angle)
             }
             else if (pv > 0)
             {
-                int speed = min(max(pv, 50), 200);
+                int speed = min(max(pv, 1), 200);
                 Motor_SetSpeed(speed, -speed);
             }
             else
             {
-                int speed = min(max(pv, -200), -50);
+                int speed = min(max(pv, -200), -1);
                 Motor_SetSpeed(speed, -speed);
             }
         }
