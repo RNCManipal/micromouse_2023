@@ -12,22 +12,22 @@ int threshold;
 int counts_per_rotation = 170;
 
 /* Input pins */
-int mtrpin1_1 ;
-int mtrpin1_2 ;
-int mtrpin2_1 ;
-int mtrpin2_2 ;
+int mtrpin1_1 =4 ;
+int mtrpin1_2=5 ;
+int mtrpin2_1=6 ;
+int mtrpin2_2 =7;
 
-int mtrspd1 ;
-int mtrspd2 ;
+int mtrspd1=10 ;
+int mtrspd2=11 ;
 
-int sens_trig0, sens_echo0;
-int sens_trig1, sens_echo1;
-int sens_trig2, sens_echo2;
-int sens_trig3, sens_echo3;
+int sens_trig0 =8, sens_echo0 =9;
+int sens_trig1 =12, sens_echo1=13;
+int sens_trig2 =A2, sens_echo2 =A3;
+int sens_trig3 =A4, sens_echo3 =A5;
 
-int ENCA, ENCB, ENCC, ENCD;
+int ENCA =0, ENCB=1, ENCC=2, ENCD=3;
 
-int buttonpin ;
+int buttonpin =A0;
 bool wall_data[16][16][4];
 
 
