@@ -8,7 +8,7 @@ extern "C"{
 int kp1, ki1, kd1;
 int kp2, ki2, kd2;
 int kp3, ki3, kd3;
-int threshold;
+int threshold = 19;
 int counts_per_rotation = 170;
 
 /* Input pins */
@@ -43,6 +43,31 @@ void readEncoder (){
 }
 
 void setup(){
+    // Need to set input/putput on pins
+    pinMode(mtrpin1_1, OUTPUT);
+    pinMode(mtrpin1_2, OUTPUT);
+    pinMode(mtrpin2_1, OUTPUT);
+    pinMode(mtrpin2_2, OUTPUT);
+
+    pinMode(mtrspd1, OUTPUT);
+    pinMode(mtrspd2, OUTPUT);
+
+    pinMode(sens_trig0, OUTPUT);
+    pinMode(sens_echo0, INPUT);
+    pinMode(sens_trig1, OUTPUT);
+    pinMode(sens_echo1, INPUT);
+    pinMode(sens_trig2, OUTPUT);
+    pinMode(sens_echo2, INPUT);
+    pinMode(sens_trig3, OUTPUT);
+    pinMode(sens_echo3, INPUT);
+
+    pinMode(ENCA, INPUT);
+    pinMode(ENCB, INPUT);
+    pinMode(ENCC, INPUT);
+    pinMode(ENCD, INPUT);
+
+    pinMode(buttonpin, INPUT);
+
     for (int i =0 ; i<16; i++){  //intializing wall array to 0 initially
         for (int j =0; j<16; j++){
             for (int k = 0; k<4; k++){
@@ -52,7 +77,7 @@ void setup(){
     }
     attachInterrupt(digitalPinToInterrupt(ENCA),readEncoder,RISING);
 
-    Serial.begin(96000);
+    Serial.begin(9600);
 }
 
 
@@ -78,24 +103,21 @@ short int arena_map[16][16] = {
 short int position[2] = {15, 0}; //Current position of bot
 int facing = 1; // 0 = East, 1 = North, 2 = West, 3 = South
 int found = 0;
+int prin = 1;
 
 void loop(){
 
-    facing = 1;
-    position[0] = 15;
-    position[1] = 0; //Initializing bot information
+    if (prin){
+        Serial.print(position[0]);
+        Serial.println(position[1]);
+        Serial.println(facing);
+        prin = 1;
+    }
 
     if (digitalRead(buttonpin)){
-        while (!found){
 
             if (arena_map[position[0]][position[1]] == 0){ //Found the center
-                found = 1;
-                break;
-            }
-
-            if (digitalRead(buttonpin)){ // Time over, restart from beginning
-                brake();
-                break;
+                Serial.println("Found");
             }
 
             detect_wall(facing, position,wall_data); //Detect walls on current node
@@ -103,54 +125,51 @@ void loop(){
             int turn_direction = direction_wrt_bot(arena_map, &position, facing, wall_data); //Decide direction to turn to so as to face the correct node
             switch (turn_direction)
             {
-                case 0:
-                    turn(-90); //Turn Left
-                    facing = facing - 1;
-                    if (facing == -1){
-                        facing = 3;
-                    }
-                    break;
+            case 0:
+                Serial.println("Left");
+                facing = facing - 1;
+                if (facing == -1){
+                    facing = 3;
+                }
+                break;
 
-                case 1:
-                    break; //Facing the correct node
+            case 1:
+                Serial.println("Forward");
+                break; //Facing the correct node
 
-                case 2:
-                    facing = (facing + 1)%4;
-                    turn (90); //Turn Right
-                    break;
+            case 2:
+                facing = (facing + 1)%4;
+                Serial.println("Right");
+                break;
 
-                case 3:
-                    facing = (facing + 2)%4;
-                    turn(180);  //Turn Back
-                    break;
+            case 3:
+                facing = (facing + 2)%4;
+                Serial.println("Back");
+                break;
 
-                default:
-                    Serial.println("Not possible");
-                    break;
-            }
-
-            switch(facing){ //Update current position
-                case 0:
-                    position[1] -= 1;
-                    break;
-
-                case 1:
-                    position[0] -= 1;
-                    break;
-
-                case 2:
-                    position[1] += 1;
-                    break;
-
-                case 3:
-                    position[0] += 1;
-                    break;
-            }
-
-            p2p_pid(25); //Move forward 25 cms
-            brake();
+            default:
+                Serial.println("Not possible");
+                break;
         }
 
-        found =0;
+        switch(facing){ //Update current position
+            case 0:
+                position[1] -= 1;
+                break;
+
+            case 1:
+                position[0] -= 1;
+                break;
+
+            case 2:
+                position[1] += 1;
+                break;
+
+            case 3:
+                position[0] += 1;
+                break;
+        }
+        prin = 1;
     }
+    Serial.println();
 }
