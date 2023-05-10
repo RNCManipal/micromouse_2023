@@ -8,11 +8,11 @@ void p2p_pid(int dist) {
 
   // let encoder giving 'x' number of counts per rotation
   double setpnt_counts =(rotatn_req) * (520); // number of counts requiredto reach the set point(inshort this is our setpoint)
-
+  //Serial.print("setpnt_counts");
   count=0;
   double lasterror = 0;
-  double kp1 = 0.1;
-  double kd1 = 1.6;
+  double kp1 = 0.2;
+  double kd1 = 1.0;
   double last_error = 0, error = 0;
   double pv = 0;
 
@@ -22,7 +22,8 @@ void p2p_pid(int dist) {
     while (1) {
 
       error = (count) - (setpnt_counts);
-     
+      Serial.println(count);
+      Serial.println(error);
       if (lasterror ==0) { // this condition is used to remove intial high gain in velocity
         pv = kp1 * error;
       } else {
@@ -53,10 +54,11 @@ void p2p_pid(int dist) {
     }
   } else if (setpnt_counts > 0) {
     while (1) {
-
-      error = (setpnt_counts) -(count); // x is the number of encoder countsper revolution
       
-
+      error = (setpnt_counts) -(count); // x is the number of encoder countsper revolution
+      Serial.println(count);
+      Serial.println(error);
+      
       if (lasterror ==0) { // this condition is used to remove intial high gain in velocity
         pv = kp1 * error;
       } else {
