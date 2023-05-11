@@ -12,6 +12,7 @@
 extern int kp1, ki1, kd1;
 extern int kp2, ki2, kd2;
 extern int kp3, ki3, kd3;
+extern int kp4,kd4;
 extern int threshold;
 extern int counts_per_rotation;
 

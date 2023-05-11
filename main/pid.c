@@ -229,3 +229,18 @@ void composite_pid(int dist){
         Motor_SetSpeed(speedl, speedr);
     }
 }
+void encoderPid(){
+    
+    double  error, lasterror = 0, pv;
+    while(1){
+        int encoder1=encoderOutput1();
+        int encoder2=encoderOutput1();
+
+        error = encoder1 - encoder2;
+        pv = kp4 * error + kd4 * (error - lasterror);
+        lasterror = error;
+
+        Motor_SetSpeed(min(max(OPTIMUM_SPEED - pv, 1), 200), min(max(OPTIMUM_SPEED + pv, 1), 200));
+    }
+
+}

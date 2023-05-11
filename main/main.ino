@@ -8,6 +8,7 @@ extern "C"{
 int kp1, ki1, kd1;
 int kp2, ki2, kd2;
 int kp3, ki3, kd3;
+int kp4,kd4;
 int threshold;
 int counts_per_rotation = 170;
 
