@@ -1,6 +1,10 @@
 #include <Arduino.h>
 #include <stdlib.h>
 #include "bot_functions.h"
+#include <MPU6050_light.h>
+
+
+
 
 void p2p_pid(int dist) {
   // PID Controller. Used to control the speed of the bot. Function
@@ -22,8 +26,8 @@ void p2p_pid(int dist) {
     while (1) {
 
       error = (count) - (setpnt_counts);
-      Serial.println(count);
-      Serial.println(error);
+      // Serial.println(count);
+      // Serial.println(error);
       if (lasterror ==0) { // this condition is used to remove intial high gain in velocity
         pv = kp1 * error;
       } else {
@@ -56,8 +60,8 @@ void p2p_pid(int dist) {
     while (1) {
       
       error = (setpnt_counts) -(count); // x is the number of encoder countsper revolution
-      Serial.println(count);
-      Serial.println(error);
+      // Serial.println(count);
+      // Serial.println(error);
       
       if (lasterror ==0) { // this condition is used to remove intial high gain in velocity
         pv = kp1 * error;
@@ -137,4 +141,32 @@ void p2p_pid(int dist) {
 
 //         Motor_SetSpeed(speedl, speedr);
 //     }
+// }
+
+// double gyro_pid(int angle) {
+//   int curr_angle = mpu.getAngleZ();  //fetch_angle()
+//   int req_angle = curr_angle - angle;
+
+//   double error = 0, lasterror = 0, pv = 0;
+
+//   while (1) {
+//     error = req_angle - mpu.getAngleZ();  // fetch_angle()
+//     pv = kp3 * error + kd3 * (error - lasterror);
+//     lasterror = error;
+
+//     Serial.print(error);
+//     Serial.print(" ");
+//     Serial.println(pv);
+
+//     if (pv >= -0.1 && pv <= 0.1) {
+//       brake();
+//       break;
+//     } else if (pv > 0) {
+//       int speed = min(max(pv, 50), 200);
+//       Motor_SetSpeed(speed, -speed);
+//     } else {
+//       int speed = min(max(pv, -200), -50);
+//       Motor_SetSpeed(speed, -speed);
+//     }
+//   }
 // }

@@ -1,10 +1,11 @@
 
-extern "C"{
-    #include "bot_functions.h"
-};
+#include "Wire.h"
+#include <MPU6050_light.h>
+#include "bot_functions.h"
 
 //Variable declaration 
 
+MPU6050 mpu(Wire);
 
 
 #define ENCA 0
@@ -24,13 +25,14 @@ int mtrpin1_2=in2;
 int mtrpin2_1=in3 ;
 int mtrpin2_2 =in4;
 
-int mtrspd1=PMWA ;
-int mtrspd2=PMWB;
+unsigned long int timer = 0;
+int mtrspd1=PWMA ;
+int mtrspd2=PWMB;
 
 int kp1=0.2, ki1, kd1=1;
 //Not using KP2, kd2
 int kp3=1.5, ki3, kd3=3;
-int threshold;
+int threshold = 9;
 int counts_per_rotation = 170;
 
 int sens_trig0 =8, sens_echo0 =9;
@@ -38,7 +40,7 @@ int sens_trig1 =12, sens_echo1=13;
 int sens_trig2 =A2, sens_echo2 =A3;
 int sens_trig3 =A4, sens_echo3 =A5;
 
-int ENCA =0, ENCB=1, ENCC=2, ENCD=3;
+
 
 int buttonpin =A0;
 bool wall_data[6][6][4];
@@ -56,6 +58,30 @@ void readEncoder (){
 }
 
 void setup(){
+  Serial.begin(9600);
+  count = 0;
+  byte status = mpu.begin();
+  Serial.print(F("MPU6050 status: "));
+  Serial.println(status);
+  while(status!=0){Serial.println("Not Connected"); } // stop everything if could not connect to MPU6050
+  
+  Serial.println(F("Calculating offsets, do not move MPU6050"));
+  mpu.calcOffsets(); // gyro and accelero
+  Serial.println("Done!\n");
+  pinMode(ENCA,INPUT);
+  pinMode(ENCB,INPUT);
+  pinMode(ENCC,INPUT);
+  pinMode(ENCD,INPUT);
+  
+  pinMode (PWMA, OUTPUT);
+  pinMode(PWMB,OUTPUT);
+  pinMode (in1, OUTPUT);
+  pinMode (in2, OUTPUT);
+  pinMode(in3,OUTPUT);
+  pinMode(in4,OUTPUT);
+
+  
+  attachInterrupt(digitalPinToInterrupt(ENCA),readEncoder,RISING);
     for (int i =0 ; i<6; i++){  //intializing wall array to 0 initially
         for (int j =0; j<6; j++){
             for (int k = 0; k<4; k++){
@@ -63,9 +89,9 @@ void setup(){
             }
         }
     }
-    attachInterrupt(digitalPinToInterrupt(ENCA),readEncoder,RISING);
+  
 
-    Serial.begin(96000);
+    
 }
 
 
@@ -123,11 +149,11 @@ void loop(){
 
             detect_wall(facing, position,wall_data); //Detect walls on current node
 
-            int turn_direction = direction_wrt_bot(arena_map, &position, facing, wall_data); //Decide direction to turn to so as to face the correct node
+            int turn_direction = direction_wrt_bot(arena_map, position, facing, wall_data); //Decide direction to turn to so as to face the correct node
             switch (turn_direction)
             {
                 case 0:
-                    turn(-90); //Turn Left
+                    gyro_pid(-90); //Turn Left
                     facing = facing - 1;
                     if (facing == -1){
                         facing = 3;
@@ -139,12 +165,13 @@ void loop(){
 
                 case 2:
                     facing = (facing + 1)%4;
-                    turn (90); //Turn Right
+                    gyro_pid (90); //Turn Right
                     break;
 
                 case 3:
                     facing = (facing + 2)%4;
-                    turn(180);  //Turn Back
+                    gyro_pid(90);  //Turn Back
+                    gyro_pid(90);  //Turn Back
                     break;
 
                 default:
@@ -170,10 +197,38 @@ void loop(){
                     break;
             }
 
-            p2p_pid(25); //Move forward 25 cms
+            p2p_pid(26); //Move forward 25 cms
             brake();
         }
 
         found =0;
     }
+}
+
+double gyro_pid(int angle) {
+  int curr_angle = mpu.getAngleZ();  //fetch_angle()
+  int req_angle = curr_angle - angle;
+
+  double error = 0, lasterror = 0, pv = 0;
+
+  while (1) {
+    error = req_angle - mpu.getAngleZ();  // fetch_angle()
+    pv = kp3 * error + kd3 * (error - lasterror);
+    lasterror = error;
+
+    Serial.print(error);
+    Serial.print(" ");
+    Serial.println(pv);
+
+    if (pv >= -0.1 && pv <= 0.1) {
+      brake();
+      break;
+    } else if (pv > 0) {
+      int speed = min(max(pv, 50), 200);
+      Motor_SetSpeed(speed, -speed);
+    } else {
+      int speed = min(max(pv, -200), -50);
+      Motor_SetSpeed(speed, -speed);
+    }
+  }
 }

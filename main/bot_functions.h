@@ -1,14 +1,18 @@
+#include <Arduino.h>
+#include <stdbool.h>
 #ifndef BOT_FUNC_H
 #define BOT_FUNC_H
 
-#include <Arduino.h>
-#include <stdbool.h>
+// #include "Wire.h"
+// #include <MPU6050_light.h>
+
 
 //Frequent Varibles
 #define MAX_SIZE 4 
 #define OPTIMUM_SPEED 150
 #define WHEEL_DIAMETER 10.681415
-
+//MPU6050 mpu(Wire);
+extern unsigned long timer;
 extern int kp1, ki1, kd1;
 extern int kp2, ki2, kd2;
 extern int kp3, ki3, kd3;
@@ -55,7 +59,7 @@ typedef struct {
 //Flood-fill Code
 void swap(int *x, int *y);
 int* minimum_cost(short int arena_map[6][6], short int bot_pos[2], int *sortedArray);
-void detect_wall(int face, int pos[2],bool wall_data[][6][4]);
+void detect_wall(int face, short int pos[2],bool wall_data[][6][4]);
 int minimum_value_accessible_neighbors(short int arena_map[6][6], short int pos[2], int *smallest_accessible_regardless,bool wall_data[][6][4]);
 void rearrange_map(short int arena_map[6][6], short int base_pos[2],bool wall_data[][6][4]);
 bool thresHold(int distance);

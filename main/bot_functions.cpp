@@ -117,7 +117,7 @@ bool thresHold(int distance){
     }
 }
 
-void detect_wall(int face, int pos[2],bool wall_data[][6][4]){
+void detect_wall(int face, short int pos[2],bool wall_data[][6][4]){
     /*returns an array [l, s, r, b] with 1 if wall is detected and 0 if not
                        [0,1,2,3]
     ____ s1____    
@@ -255,7 +255,7 @@ int minimum_value_accessible_neighbors(short int arena_map[6][6], short int pos[
     }
 }
 
-void rearrange_map(short int arena_map[16][16], short int base_pos[2],bool wall_data[][16][4]){
+void rearrange_map(short int arena_map[6][6], short int base_pos[2],bool wall_data[][6][4]){
     //Changes value of map node cost in case the current node has a strictly lower cost than all of its accessible neighbors. Function verified
 
     queue_push(base_pos[0], base_pos[1]); //pushing base node to queue
