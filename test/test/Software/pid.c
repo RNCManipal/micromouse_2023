@@ -6,15 +6,19 @@ void p2p_pid(int dist) {
   // PID Controller. Used to control the speed of the bot. Function
   double rotatn_req = (dist /(3.14*WHEEL_DIAMETER)); // number of rotations ofwheel required to complete given distance
 
-    // let encoder giving 'x' number of counts per rotation
-  double setpnt_counts =(rotatn_req) * (counts_per_rotation); // number of counts requiredto reach the set point(inshort this is our setpoint)
+  // let encoder giving 'x' number of counts per rotation
+  double setpnt_counts =(rotatn_req) * (520); // number of counts requiredto reach the set point(inshort this is our setpoint)
   //Serial.print("setpnt_counts");
   count=0;
   double lasterror = 0;
+  double kp1 = 0.2;
+  double kd1 = 1.0;
   double last_error = 0, error = 0;
-    double pv = 0;
+  double pv = 0;
 
-    if (setpnt_counts < 0) {
+  // double maxerror = kp1*setpnt_counts + kd1*(setpnt_counts);
+
+  if (setpnt_counts < 0) {
     while (1) {
 
       error = (count) - (setpnt_counts);
@@ -69,16 +73,23 @@ void p2p_pid(int dist) {
       } else if (pv > 0) {
         int speed = min(max(pv, 50), 200);
        
-        Motor_SetSpeed(speed, speed); 
+        Motor_SetSpeed(speed, speed); //Set the parameters later.
+        // theseparameters are speed of left and right wheel and will be
+        // forforward motion since pv>=0
+        
+
       } else if (pv < 0) {
         int speed = min(max(pv, -200), -50);
         
-        Motor_SetSpeed(speed, speed);
+        Motor_SetSpeed(speed, speed); //Set the parameters later.
+        // theseparameters are speed of left and right wheel and will be
+        // forforward motion since pv>=0
 
       }
     }
   }
 }
+
 
 void sens_pid()
 {
@@ -105,6 +116,73 @@ void sens_pid()
         lasterror = error;
 
         Motor_SetSpeed(min(max(OPTIMUM_SPEED - pv, 1), 200), min(max(OPTIMUM_SPEED + pv, 1), 200));
+    }
+}
+
+void turn(int angle)
+{
+    // PID controller for turning the bot by a given angle
+    if((angle<6)&&(angle>(-6))&& angle!=0)  // condition if the angle is between 6 and -6
+    { angle = 360+ angle;} 
+    double theta_in_rad = (angle * 3.14159265359) / 180;
+
+    double distance_turned_for_given_angle = (theta_in_rad * WHEEL_DIAMETER);
+    count = 0; // encoder count
+    double error = 0, lasterror = 0, pv = 0;
+
+    double encoder_Counts_required = (counts_per_rotation * distance_turned_for_given_angle) / (3.14159265359 * WHEEL_DIAMETER);
+    double maxerror = kp3 * encoder_Counts_required + kd3 * (encoder_Counts_required);
+
+    if (encoder_Counts_required < 0)
+    { // anticlockwise rotation
+        while (1)
+        {
+            error = (-encoder_Counts_required) - (count);
+            pv = kp3 * error + kd3 * (error - lasterror);
+            lasterror = error;
+
+            if (pv >= -0.1 && pv <= 0.1)
+            { // upper and lower threshold limits of pv
+                brake();
+                break;
+            }
+            else if (pv > 0)
+            {
+                int speed = min(max(pv, 1), 200);
+                Motor_SetSpeed(-speed, speed);
+            }
+            else
+            {
+                int speed = min(max(pv, -200), -1);
+                Motor_SetSpeed(-speed, speed);
+            }
+        }
+    }
+
+    else
+    { // clockwise rotation
+        while (1)
+        {
+            error = (encoder_Counts_required) - (count);
+            pv = kp3 * error + kd3 * (error - lasterror);
+            lasterror = error;
+
+            if (pv >= -0.1 && pv <= 0.1)
+            {
+                brake();
+                break;
+            }
+            else if (pv > 0)
+            {
+                int speed = min(max(pv, 1), 200);
+                Motor_SetSpeed(speed, -speed);
+            }
+            else
+            {
+                int speed = min(max(pv, -200), -1);
+                Motor_SetSpeed(speed, -speed);
+            }
+        }
     }
 }
 
@@ -150,31 +228,5 @@ void composite_pid(int dist){
         int speedr = min(max(pv_p2p + pv_sens, -200), 200);
 
         Motor_SetSpeed(speedl, speedr);
-    }
-}
-
-double gyro_pid(int angle){
-    int curr_angle = fetch_angle();
-    int req_angle = curr_angle - angle;
-
-    double error = 0, lasterror = 0, pv = 0;
-
-    while (1){
-        error = req_angle - fetch_angle();
-        pv = kp3 * error + kd3 * (error - lasterror);
-        lasterror = error;
-
-        if (pv >= -0.1 && pv <= 0.1){
-            brake();
-            break;
-        }
-        else if (pv > 0){
-            int speed = min(max(pv, 50), 200);
-            Motor_SetSpeed(speed, -speed);
-        }
-        else{
-            int speed = min(max(pv, -200), -50);
-            Motor_SetSpeed(speed, -speed);
-        }
     }
 }

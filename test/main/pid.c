@@ -80,34 +80,56 @@ void p2p_pid(int dist) {
   }
 }
 
-void sens_pid()
-{
-    // PID calculation for if the bot defers the straight line path and heads for a wall
-    // Makes use of the logic that the left and right sensor values should be same at all points of time
-    // Integrate with p2p pid later
 
-    double sensor_left, sensor_right, error, lasterror = 0, pv;
-    while (1)
-    {
-        sensor_left = sensor_output(sens_trig0, sens_echo0);
-        sensor_right = sensor_output(sens_trig2, sens_echo2);
 
-        int detection_s0 = thresHold(sensor_output(sens_trig0, sens_echo0));
-        int detection_s2 = thresHold(sensor_output(sens_trig2, sens_echo2));
 
-        if (detection_s0 == 0 || detection_s2 == 0)
-        {
-            break;
-        }
 
-        error = sensor_left - sensor_right;
-        pv = kp2 * error + kd2 * (error - lasterror);
-        lasterror = error;
+// void composite_pid(int dist){
+//     // PID controller combining p2p_pid and sens_pid
 
-        Motor_SetSpeed(min(max(OPTIMUM_SPEED - pv, 1), 200), min(max(OPTIMUM_SPEED + pv, 1), 200));
-    }
-}
+//     double lasterror_p2p =0, lasterror_sens = 0;
+//     double rotatn_req= (dist/WHEEL_DIAMETER); // number of rotations of wheel required to complete given distance
+//     double setpnt_counts=(rotatn_req )* (counts_per_rotation); // number of counts required to reach the set point(inshort this is our setpoint)
 
+<<<<<<< Updated upstream
+//     double error_p2p = 0, error_sens = 0;
+
+//     double pv_p2p, pv_sens; //Individual pv values for p2p and sens
+
+//     while (1){
+//         { //p2p_pid
+//             error_p2p =(setpnt_counts)-(count); //x is the number of encoder counts per revolution
+//             pv_p2p = kp1*error_p2p + kd1*(error_p2p-(lasterror_p2p));
+//             lasterror_p2p = error_p2p;
+//         }
+
+//         { //sens_pid
+//             int sensl = sensor_output(sens_trig0, sens_echo0);
+//             int sensr = sensor_output(sens_trig2, sens_echo2);
+
+//             if (thresHold(sensl) == 0 || thresHold(sensr) == 0){
+//                 pv_sens = 0;
+//             }
+//             else{
+//                 error_sens = sensl - sensr;
+//                 pv_sens = kp2*error_sens + kd2*(error_sens-(lasterror_sens));
+//                 lasterror_sens = error_sens;
+//             }
+//         }
+
+//         pv_p2p = min(max(pv_p2p, -180), 180);
+
+//         if (-1.5<(pv_p2p - pv_sens) && (pv_p2p - pv_sens)<1.5){
+//             break;
+//         }
+
+//         int speedl = min(max(pv_p2p - pv_sens, -200), 200);
+//         int speedr = min(max(pv_p2p + pv_sens, -200), 200);
+
+//         Motor_SetSpeed(speedl, speedr);
+//     }
+// }
+=======
 void composite_pid(int dist){
     // PID controller combining p2p_pid and sens_pid
 
@@ -178,3 +200,4 @@ double gyro_pid(int angle){
         }
     }
 }
+>>>>>>> Stashed changes

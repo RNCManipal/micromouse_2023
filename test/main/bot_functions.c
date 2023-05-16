@@ -21,7 +21,7 @@ void swap(int *x, int *y){
     *y = temp;
 }
 
-int* minimum_cost(short int arena_map[16][16], short int bot_pos[2], int *sortedArray){
+int* minimum_cost(short int arena_map[6][6], short int bot_pos[2], int *sortedArray){
     /*
         returns array with [0,1,2,3] as [l,s,r,b] in ascending order of their weights
         Function verified
@@ -117,7 +117,7 @@ bool thresHold(int distance){
     }
 }
 
-void detect_wall(int face, int pos[2],bool wall_data[][16][4]){
+void detect_wall(int face, int pos[2],bool wall_data[][6][4]){
     /*returns an array [l, s, r, b] with 1 if wall is detected and 0 if not
                        [0,1,2,3]
     ____ s1____    
@@ -211,7 +211,7 @@ void detect_wall(int face, int pos[2],bool wall_data[][16][4]){
       }
 }
 
-int minimum_value_accessible_neighbors(short int arena_map[16][16], short int pos[2], int *smallest_accessible_regardless,bool wall_data[][16][4]){
+int minimum_value_accessible_neighbors(short int arena_map[6][6], short int pos[2], int *smallest_accessible_regardless,bool wall_data[][6][4]){
     /*returns 0 for left, 1 for forward, 2 for right, 3 for back, -1 if no minimum accessible neighbors
     Function verified
     */
@@ -299,7 +299,7 @@ void rearrange_map(short int arena_map[16][16], short int base_pos[2],bool wall_
     }
 }
 
-int direction_wrt_compass(short int arena_map[16][16], short int bot_pos[2], bool wall_data[][16][4]){
+int direction_wrt_compass(short int arena_map[6][6], short int bot_pos[2], bool wall_data[][6][4]){
     // Checks which direction to move in wrt to a compass. i.e 0=>East, 1=>North, 2=>West, 3=>South. Function unverified
 
     int *smallest_value;
@@ -330,7 +330,7 @@ int direction_wrt_compass(short int arena_map[16][16], short int bot_pos[2], boo
 }
 
 
-int direction_wrt_bot(short int arena_map[16][16], short int bot_pos[2], int facing, bool wall_data[][16][4]){
+int direction_wrt_bot(short int arena_map[6][6], short int bot_pos[2], int facing, bool wall_data[][6][4]){
     /*Decide which direction the both should move in from its perspective*/
     int direction = direction_wrt_compass(arena_map, bot_pos, wall_data);
 
