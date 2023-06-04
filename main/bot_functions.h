@@ -13,9 +13,9 @@
 #define WHEEL_DIAMETER 10.681415
 //MPU6050 mpu(Wire);
 extern unsigned long timer;
-extern int kp1, ki1, kd1;
-extern int kp2, ki2, kd2;
-extern int kp3, ki3, kd3;
+extern double kp1, ki1, kd1;
+extern double kp2, ki2, kd2;
+extern double kp3, ki3, kd3;
 extern int threshold;
 extern int counts_per_rotation;
 

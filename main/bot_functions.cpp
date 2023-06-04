@@ -38,7 +38,7 @@ int* minimum_cost(short int arena_map[6][6], short int bot_pos[2], int *sortedAr
         top = arena_map[bot_pos[0] - 1][bot_pos[1]];
     }
 
-    if (bot_pos[0] == 15){ //if bot is at bottom row
+    if (bot_pos[0] == 5){ //if bot is at bottom row
         bottom = 1000;
     }
     else{
@@ -52,14 +52,14 @@ int* minimum_cost(short int arena_map[6][6], short int bot_pos[2], int *sortedAr
         left = arena_map[bot_pos[0]][bot_pos[1] - 1];
     }
 
-    if (bot_pos[1] == 15){ //if bot is at rightmost column
+    if (bot_pos[1] == 5){ //if bot is at rightmost column
         right = 1000;
     }
     else{
         right = arena_map[bot_pos[0]][bot_pos[1] + 1];
     }
 
-    int *return_value = calloc (4, sizeof(int)); //array to be returned
+    int *return_value = (int *)calloc (4, sizeof(int)); //array to be returned
     int temp_arr[4] = {left, top, right, bottom}; //array to be sorted
     int smallest =0;
     
@@ -87,26 +87,21 @@ int* minimum_cost(short int arena_map[6][6], short int bot_pos[2], int *sortedAr
     return return_value;
 }
 
-int sensor_output(int sonartrig, int sonarecho){
-    //Measures distance to a barrier in <units to be found>
-
-    digitalWrite(sonartrig, LOW);
-    delayMicroseconds(2);
-
-    // Sets the trigPin on HIGH state for 10 micro seconds
-    digitalWrite(sonartrig, HIGH);
-    delayMicroseconds(10);
-
-    digitalWrite(sonartrig, LOW);
-
-    // Reads the echoPin, returns the sound wave travel time in microseconds
-    int duration = pulseIn(sonarecho, HIGH, 0);
-
-    // Calculating the distance
-    int distance = duration * 0.034 / 2;
- 
-    return distance;
+void trigger(int pinNo){
+  digitalWrite (pinNo, LOW);
+  delayMicroseconds(2);
+  digitalWrite (pinNo, HIGH);
+  delayMicroseconds(10);
+  digitalWrite (pinNo, LOW);
 }
+
+int distance (int pinNo){
+  int readv, dis;
+  readv = pulseIn(pinNo, HIGH);
+  dis = (readv * 0.034) / 2;
+  return dis;
+}
+
 
 bool thresHold(int distance){
     if (distance > threshold){
@@ -135,11 +130,20 @@ void detect_wall(int face, short int pos[2],bool wall_data[][6][4]){
     
     // Head sensor 1
     Map *map = map_init();
+    
+    trigger(sens_trig2);
+    int dis1= distance(sens_echo2);
+    trigger(sens_trig1);
+    int dis2= distance(sens_echo1);
+    trigger(sens_trig0);
+    int dis3= distance(sens_echo0);
+    trigger(sens_trig3);
+    int dis4= distance(sens_echo3);
 
-    int  detection_s0 = thresHold(sensor_output(sens_trig0, sens_echo0));
-    int  detection_s1 = thresHold(sensor_output(sens_trig1, sens_echo1));
-    int  detection_s2 = thresHold(sensor_output(sens_trig2, sens_echo2));
-    int  detection_s3 = thresHold(sensor_output(sens_trig3, sens_echo3));
+    int  detection_s0 = thresHold(dis1);
+    int  detection_s1 = thresHold(dis2);
+    int  detection_s2 = thresHold(dis3);
+    int  detection_s3 = thresHold(dis4);
 
     map_put(map, 0, 0);
     map_put(map, 1, 0);
@@ -206,9 +210,13 @@ void detect_wall(int face, short int pos[2],bool wall_data[][6][4]){
     }
 
       // fill the return array with keys values of the map accordingly in the return array
+      Serial.print("Wall data: ");
       for(int i =0;i<4;i++){
         wall_data[pos[0]][pos[1]][i] = map_get(map,i);
+        Serial.print(wall_data[pos[0]][pos[1]][i]);
+    Serial.print(" ");
       }
+      Serial.println();
 }
 
 int minimum_value_accessible_neighbors(short int arena_map[6][6], short int pos[2], int *smallest_accessible_regardless,bool wall_data[][6][4]){
@@ -219,8 +227,19 @@ int minimum_value_accessible_neighbors(short int arena_map[6][6], short int pos[
     int sortedArray[4]; 
     int *min_cost = minimum_cost(arena_map, pos, sortedArray);
 
+//        Serial.print(sortedArray[0]);
+//    Serial.print(" ");
+//    Serial.print(sortedArray[1]);
+//    Serial.print(" ");
+//    Serial.print(sortedArray[2]);
+//    Serial.print(" ");
+//    Serial.println(sortedArray[3]);
+    
     for (int i =0; i< 4; i++){
-
+      Serial.print("min: ");
+      Serial.println(sortedArray[i]);
+      Serial.print(" pos:");
+      Serial.println(min_cost[i]);
         if (arena_map[pos[0]][pos[1]]>sortedArray[i]){ //Checking if current node is greater than minimum accessible neighbors.
             // if (wall_array[min_cost[i]] == 0){ //Checking if node is accessible
             if (wall_data[pos[0]][pos[1]][min_cost[i]] == 0){ //Checking if node is accessible
@@ -309,6 +328,9 @@ int direction_wrt_compass(short int arena_map[6][6], short int bot_pos[2], bool 
     do{
         min_access = minimum_value_accessible_neighbors(arena_map, bot_pos, &small, wall_data);
 
+    Serial.print("Direction: ");
+    Serial.println(min_access);
+        
         switch (min_access){  //lsrb if nodes are equal
             case 0://move east
                 return 0;
@@ -332,19 +354,19 @@ int direction_wrt_compass(short int arena_map[6][6], short int bot_pos[2], bool 
 
 int direction_wrt_bot(short int arena_map[6][6], short int bot_pos[2], int facing, bool wall_data[][6][4]){
     /*Decide which direction the both should move in from its perspective*/
-    int direction = direction_wrt_compass(arena_map, bot_pos, wall_data);
+    int direction1 = direction_wrt_compass(arena_map, bot_pos, wall_data);
 
-    if (facing == direction){
+    if (facing == direction1){
         //move forward
         return 1;
     }
 
-    else if (((facing+1)%4 == direction)){
+    else if (((facing+1)%4 == direction1)){
         //turn right
         return 2;
     }
 
-    else if (facing == (direction+1)%4){
+    else if (facing == (direction1+1)%4){
         //turn left 
         return 0;
     }

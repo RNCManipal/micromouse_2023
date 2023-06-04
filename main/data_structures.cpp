@@ -8,7 +8,7 @@ short int ** queue;
 int first, last;
 
 void initialize_queue(){
-    queue = calloc (SIZE, sizeof(short int*));
+    queue = (short int **)calloc (SIZE, sizeof(short int*));
     first = 0;
     last = 0;
 }
@@ -32,7 +32,7 @@ void queue_push (short int x, short int y){
         return;
     }
 
-    queue[last] = calloc (2, sizeof(short int));
+    queue[last] = (short int *)calloc (2, sizeof(short int));
     queue[last][0] = x;
     queue[last][1] = y;
     last = (last+1)%SIZE;
@@ -98,7 +98,7 @@ typedef struct {
 
 // Initialize the map
 Map *map_init() {
-    Map *map = malloc(sizeof(Map));
+    Map *map = (Map *)malloc(sizeof(Map));
     map->size = 0;
     return map;
 }
@@ -109,7 +109,7 @@ void map_put(Map *map, int key, int value) {
         printf("Map is full!\n");
         return;
     }
-    KeyValuePair *pair = malloc(sizeof(KeyValuePair));
+    KeyValuePair *pair = (KeyValuePair *)malloc(sizeof(KeyValuePair));
     pair->key = key;
     pair->value = value;
     map->pairs[map->size] = pair;

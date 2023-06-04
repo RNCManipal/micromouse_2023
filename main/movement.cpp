@@ -74,14 +74,14 @@ void turn_around(){
 void Motor_SetSpeed(int spdL, int spdR){
   if (spdL < 0){
     analogWrite(mtrspd1, -spdL);
-    digitalWrite(mtrpin1_1, LOW);
-    digitalWrite(mtrpin1_2, HIGH);
+    digitalWrite(mtrpin1_1, HIGH);
+    digitalWrite(mtrpin1_2, LOW);
   }
 
   else{
     analogWrite(mtrspd1, spdL);
-    digitalWrite(mtrpin1_1, HIGH);
-    digitalWrite(mtrpin1_2, LOW);
+    digitalWrite(mtrpin1_1, LOW);
+    digitalWrite(mtrpin1_2, HIGH);
   }
 
 
