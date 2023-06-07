@@ -37,7 +37,7 @@ int counts_per_rotation = 520;
 
 int sens_trig0 =8, sens_echo0 =9;
 int sens_trig1 =12, sens_echo1=13;
-int sens_trig2 =A2, sens_echo2 =A3;
+int sens_trig2 =A3, sens_echo2 =A2;
 int sens_trig3 =A4, sens_echo3 =A5;
 
 
@@ -141,12 +141,12 @@ void loop(){
     facing = 1;
     pos[0] = 5;
     pos[1] = 0; //Initializing bot information
-    
+    Serial.println("starting ");
     if (digitalRead(buttonpin) == 1){ //If button is pressed, start bot
     
         while (!found){
 
-          Serial.print("Facing: ");
+          Serial.println("Facing: ");
              Serial.print(pos[0]);
              Serial.println(pos[1]);
 
