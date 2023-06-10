@@ -44,16 +44,22 @@ int* minimum_cost(short int arena_map[16][16], short int bot_pos[2], int *sorted
         left = arena_map[bot_pos[0]][bot_pos[1] - 1];
     }
 
-    if (bot_pos[1] == 15){ //if bot is at rightmost column
+    if (bot_pos[1] == 16){ //if bot is at rightmost column
         right = 1000;
     }
     else{
         right = arena_map[bot_pos[0]][bot_pos[1] + 1];
     }
 
-    int *return_value = calloc (4, sizeof(int)); //array to be returned
+    int *return_value = (int *)calloc (4, sizeof(int)); //array to be returned
     int temp_arr[4] = {left, top, right, bottom}; //array to be sorted
     int smallest =0;
+
+    // printf("Temp array: ");
+    // for (int i =0 ; i<4; i++){ //copying temp_arr to sortedArray
+    //     printf("%d ", temp_arr[i]);
+    // }
+    // printf("\n");
     
     for (int i = 0; i<4; i++){
         return_value[i] =i; //initializing return array to [0,1,2,3]
@@ -79,7 +85,9 @@ int* minimum_cost(short int arena_map[16][16], short int bot_pos[2], int *sorted
     return return_value;
 }
 
-int minimum_value_accessible_neighbors(short int arena_map[16][16], short int pos[2], int *smallest_accessible_regardless){
+
+ 
+int minimum_value_accessible_neighbors(short int arena_map[16][16], short int pos[2], int *smallest_accessible_regardless,bool wall_data[][16][4]){
     /*returns 0 for left, 1 for forward, 2 for right, 3 for back, -1 if no minimum accessible neighbors
     Function verified
     */
@@ -87,8 +95,14 @@ int minimum_value_accessible_neighbors(short int arena_map[16][16], short int po
     int sortedArray[4]; 
     int *min_cost = minimum_cost(arena_map, pos, sortedArray);
 
+    // printf("Sorted array: ");
+    // for (int i =0; i< 4; i++){
+    //     printf("%d ", sortedArray[i]);
+    // }
+    // printf("\n");
+    
     for (int i =0; i< 4; i++){
-
+        
         if (arena_map[pos[0]][pos[1]]>sortedArray[i]){ //Checking if current node is greater than minimum accessible neighbors.
             // if (wall_array[min_cost[i]] == 0){ //Checking if node is accessible
             if (wall_data[pos[0]][pos[1]][min_cost[i]] == 0){ //Checking if node is accessible
@@ -123,7 +137,7 @@ int minimum_value_accessible_neighbors(short int arena_map[16][16], short int po
     }
 }
 
-void rearrange_map(short int arena_map[16][16], short int base_pos[2]){
+void rearrange_map(short int arena_map[16][16], short int base_pos[2],bool wall_data[][16][4]){
     //Changes value of map node cost in case the current node has a strictly lower cost than all of its accessible neighbors. Function verified
 
     queue_push(base_pos[0], base_pos[1]); //pushing base node to queue
@@ -133,7 +147,7 @@ void rearrange_map(short int arena_map[16][16], short int base_pos[2]){
 
     while (!queue_empty()){
         poped = queue_pop();
-        min_access = minimum_value_accessible_neighbors(arena_map, poped, &small); //returns index of minimum value accessible neighbor
+        min_access = minimum_value_accessible_neighbors(arena_map, poped, &small, wall_data); //returns index of minimum value accessible neighbor
 
         if (min_access == -1){ //if all accessible neighbors have higher cost than current node
 
@@ -167,6 +181,63 @@ void rearrange_map(short int arena_map[16][16], short int base_pos[2]){
     }
 }
 
+int direction_wrt_compass(short int arena_map[16][16], short int bot_pos[2], bool wall_data[][16][4]){
+    // Checks which direction to move in wrt to a compass. i.e 0=>East, 1=>North, 2=>West, 3=>South. Function unverified
+
+    int *smallest_value;
+    int small;
+    int min_access;
+
+    do{
+        min_access = minimum_value_accessible_neighbors(arena_map, bot_pos, &small, wall_data);
+        // printf("Min access: %d\n", min_access);
+    // Serial.print("Direction: ");
+    // Serial.println(min_access);
+        
+        switch (min_access){  //lsrb if nodes are equal
+            case 0://move east
+                return 0;
+                break;
+            case 1: //move north
+                return 1;
+                break;
+            case 2: //move west
+                return 2;
+                break;
+            case 3: // move south
+                return 3;
+                break;
+            case -1:
+                rearrange_map(arena_map, bot_pos, wall_data);
+        }
+
+    }while (min_access == -1);
+}
+
+
+int direction_wrt_bot(short int arena_map[16][16], short int bot_pos[2], int facing, bool wall_data[][16][4]){
+    /*Decide which direction the both should move in from its perspective*/
+    int direction1 = direction_wrt_compass(arena_map, bot_pos, wall_data);
+    // printf("Direction wrt compass: %d\n", direction1);
+
+    if (facing == direction1){
+        //move forward
+        return 1;
+    }
+
+    else if (((facing+1)%4 == direction1)){
+        //turn right
+        return 2;
+    }
+
+    else if (facing == (direction1+1)%4){
+        //turn left 
+        return 0;
+    }
+
+    return 3;
+}
+
 
 int main(){
 
@@ -184,12 +255,6 @@ int main(){
         }
     }
 
-    wall_data[14][1][0] = 0;
-    wall_data[14][1][1] = 1;
-    wall_data[14][1][2] = 1;
-    wall_data[14][1][3] = 0;
-
-
     short int arena_map[16][16] = {
     {14, 13, 12, 11, 10, 9, 8, 7, 7, 8, 9, 10, 11, 12, 13, 14},
     {13, 12, 11, 10,  9, 8, 7, 6, 6, 7, 8,  9, 10, 11, 12, 13},
@@ -206,19 +271,80 @@ int main(){
     {11, 10,  9,  8,  7, 6, 5, 4, 4, 5, 6,  7,  8,  9, 10, 11},
     {12, 11, 10,  9,  8, 7, 6, 5, 5, 6, 7,  8,  9, 10, 11, 12},
     {13, 12, 11, 10,  9, 8, 7, 6, 6, 7, 8,  9, 10, 11, 12, 13},
-    {14, 14, 15, 11, 10, 9, 8, 7, 7, 8, 9, 10, 11, 12, 13, 14},
+    {14, 13, 12, 11, 10, 9, 8, 7, 7, 8, 9, 10, 11, 12, 13, 14},
     }; //arena node weight map
 
-    short int position[2] = {14, 1};
+    short int position[2] = {15, 0};
     initialize_queue();
+    int facing = 1;
 
-    rearrange_map(arena_map,position);
+    while (true){
+        printf("Wall data for current node: \n");
+        for (int i =0 ; i<4; i++){
+            int temp;
+            scanf("%d", &wall_data[position[0]][position[1]][i]);
+            printf("%d ", wall_data[position[0]][position[1]][i]);
+        }
 
-    for (int i =0 ; i<16; i++){
+        int turn_direction = direction_wrt_bot(arena_map, position, facing, wall_data); //Decide direction to turn to so as to face the correct node
+        printf("Turn direction: %d\n", turn_direction);
+
+        switch (turn_direction)
+            {
+                case 0:
+                    printf("Turn left\n");
+                    facing = facing - 1;
+                    if (facing == -1){
+                        facing = 3;
+                    }
+                    break;
+
+                case 1:
+                    printf("Move forward\n");
+                    break; //Facing the correct node
+
+                case 2:
+                    facing = (facing + 1)%4;
+                    printf("Turn right\n");
+                    break;
+
+                case 3:
+                    facing = (facing + 2)%4;
+                    printf("Turn back\n");
+                    break;
+
+                default:
+                    // Serial.println("Not possible");
+                    break;
+            }
+
+            switch(facing){ //Update current position
+                case 0:
+                    position[1] -= 1;
+                    break;
+
+                case 1:
+                    position[0] -= 1;
+                    break;
+
+                case 2:
+                    position[1] += 1;
+                    break;
+
+                case 3:
+                    position[0] += 1;
+                    break;
+            }
+
+            printf("Current position: %d %d\n", position[0], position[1]);
+            printf("Current facing: %d\n", facing);
+            printf("Map data\n");
+            for (int i =0 ; i<16; i++){
         for (int j =0; j<16; j++){
             printf("%d ", arena_map[i][j]);
         }
         printf("\n");
+    }
     }
 
     
