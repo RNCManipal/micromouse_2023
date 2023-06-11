@@ -252,13 +252,13 @@ int main(){
     //     }
     // };
 
-    for (int i =0 ; i<6; i++){  //intializing wall array to 0 initially
-        for (int j =0; j<6; j++){
-            for (int k = 0; k<4; k++){
-                wall_data[i][j][k] = 0;
-            }
-        }
-    }
+    // for (int i =0 ; i<6; i++){  //intializing wall array to 0 initially
+    //     for (int j =0; j<6; j++){
+    //         for (int k = 0; k<4; k++){
+    //             wall_data[i][j][k] = 0;
+    //         }
+    //     }
+    // }
 
     short int arena_map[6][6] = {
     {4, 3, 2, 2, 3, 4},
@@ -277,8 +277,14 @@ int main(){
         printf("Wall data for current node: \n");
         for (int i =0 ; i<4; i++){
             int temp;
-            scanf("%d", &wall_data[position[0]][position[1]][i]);
+            // scanf("%d", &wall_data[position[0]][position[1]][i]);
             printf("%d ", wall_data[position[0]][position[1]][i]);
+        }
+
+        if (position[0] == 3 && position[1] == 3){
+            printf("Reached center!\n");
+            return 0;
+            break;
         }
 
         int turn_direction = direction_wrt_bot(arena_map, position, facing, wall_data); //Decide direction to turn to so as to face the correct node
