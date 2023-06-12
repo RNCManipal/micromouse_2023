@@ -1,16 +1,19 @@
 #include <Arduino.h>
 #include <stdlib.h>
 #include "bot_functions.h"
+#include <MPU6050_light.h>
 
 void p2p_pid(int dist) {
   // PID Controller. Used to control the speed of the bot. Function
   double rotatn_req = (dist /(3.14*WHEEL_DIAMETER)); // number of rotations ofwheel required to complete given distance
 
     // let encoder giving 'x' number of counts per rotation
-  double setpnt_counts =(rotatn_req) * (counts_per_rotation); // number of counts requiredto reach the set point(inshort this is our setpoint)
+  double setpnt_counts =(rotatn_req) * (520); // number of counts requiredto reach the set point(inshort this is our setpoint)
   //Serial.print("setpnt_counts");
   count=0;
   double lasterror = 0;
+  double kp1 = 0.2;
+  double kd1 = 1.0;
   double last_error = 0, error = 0;
     double pv = 0;
 
@@ -18,8 +21,8 @@ void p2p_pid(int dist) {
     while (1) {
 
       error = (count) - (setpnt_counts);
-      Serial.println(count);
-      Serial.println(error);
+      //Serial.println(count);
+      //Serial.println(error);
       if (lasterror ==0) { // this condition is used to remove intial high gain in velocity
         pv = kp1 * error;
       } else {
@@ -52,8 +55,8 @@ void p2p_pid(int dist) {
     while (1) {
       
       error = (setpnt_counts) -(count); // x is the number of encoder countsper revolution
-      Serial.println(count);
-      Serial.println(error);
+      //Serial.println(count);
+      //Serial.println(error);
       
       if (lasterror ==0) { // this condition is used to remove intial high gain in velocity
         pv = kp1 * error;

@@ -1,14 +1,18 @@
+
 #ifndef BOT_FUNC_H
 #define BOT_FUNC_H
 
 #include <Arduino.h>
 #include <stdbool.h>
 
+// #include "Wire.h"
+// #include <MPU6050_light.h>
 //Frequent Varibles
 #define MAX_SIZE 4 
 #define OPTIMUM_SPEED 150
 #define WHEEL_DIAMETER 10.681415
-
+//MPU6050 mpu(Wire);
+extern unsigned long timer;
 extern int kp1, ki1, kd1;
 extern int kp2, ki2, kd2;
 extern int kp3, ki3, kd3;

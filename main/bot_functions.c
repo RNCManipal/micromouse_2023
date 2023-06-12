@@ -351,3 +351,9 @@ int direction_wrt_bot(short int arena_map[16][16], short int bot_pos[2], int fac
 
     return 3;
 }
+ void position_init(){
+    //Initializes the bot so that  it is at the center of the cell.
+    //Sensor values of left, right, back should be equal
+    //May not be possible if we are not using a back sensor. 
+    //In that case, we can use the front sensor to check if the bot is at the center of the cell, but pid should be enough to stabilize itself so shouldnt be a problem.
+}
