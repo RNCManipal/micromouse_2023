@@ -3,14 +3,7 @@
 #include <stdbool.h>
 #include "data_structures.c"
 
-bool wall_data[6][6][4]={
-    {{1,1,0,1},{0,1,0,0},{0,1,0,0},{0,1,1,1},{1,1,0,0},{0,1,1,1}},
-    {{1,1,0,0},{0,0,1,1},{1,0,0,1},{0,1,0,1},{0,0,0,1},{0,1,1,0}},
-    {{1,0,0,0},{0,1,1,0},{1,1,0,0},{0,1,1,0},{1,1,1,0},{1,0,1,0}},
-    {{1,0,1,0},{1,0,1,0},{1,0,0,1},{0,0,1,0},{1,0,0,0},{0,0,1,1}},
-    {{1,0,1,0},{1,0,0,0},{0,1,0,0},{0,0,0,1},{0,0,0,1},{0,1,1,1}},
-    {{1,0,1,1},{1,0,1,1},{1,0,0,1},{0,1,0,1},{0,1,0,1},{0,1,1,1}}
-};
+bool wall_data[6][6][4];
 
 void swap(int *x, int *y){
     //Swaps values of two  numbers x and y. 
@@ -277,11 +270,11 @@ int main(){
         printf("Wall data for current node: \n");
         for (int i =0 ; i<4; i++){
             int temp;
-            // scanf("%d", &wall_data[position[0]][position[1]][i]);
+            scanf("%d", &wall_data[position[0]][position[1]][i]);
             printf("%d ", wall_data[position[0]][position[1]][i]);
         }
 
-        if (position[0] == 3 && position[1] == 3){
+        if (arena_map[position[0]][position[1]] == 0){
             printf("Reached center!\n");
             return 0;
             break;
