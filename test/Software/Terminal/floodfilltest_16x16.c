@@ -3,7 +3,15 @@
 #include <stdbool.h>
 #include "data_structures.c"
 
-bool wall_data[16][16][4];
+ bool wall_data[16][16][4];
+ //={
+//     {{1,1,1,0},{1,1,0,0},{0,1,0,1},{0,1,1,0},{1,1,1,0},{1,1,1,0}},
+//     {{1,0,0,1},{0,0,1,0},{1,1,0,1},{0,0,0,1},{0,0,1,0},{1,0,1,0}},
+//     {{1,1,1,0},{1,0,1,0},{1,1,0,0},{0,1,0,0},{0,0,1,0},{1,0,1,0}},
+//     {{1,0,0,0},{0,0,1,1},{1,0,0,1},{0,0,1,1},{1,0,0,0},{0,0,1,1}},
+//     {{1,0,0,0},{0,1,1,0},{1,1,0,0},{0,1,0,1},{0,0,0,1},{0,1,1,1}},
+//     {{1,0,1,1},{1,0,0,1},{0,0,0,1},{0,1,0,1},{0,1,0,1},{0,1,1,1}}
+// };
 
 void swap(int *x, int *y){
     //Swaps values of two  numbers x and y. 
@@ -44,7 +52,7 @@ int* minimum_cost(short int arena_map[16][16], short int bot_pos[2], int *sorted
         left = arena_map[bot_pos[0]][bot_pos[1] - 1];
     }
 
-    if (bot_pos[1] == 16){ //if bot is at rightmost column
+    if (bot_pos[1] == 15){ //if bot is at rightmost column
         right = 1000;
     }
     else{
@@ -54,12 +62,6 @@ int* minimum_cost(short int arena_map[16][16], short int bot_pos[2], int *sorted
     int *return_value = (int *)calloc (4, sizeof(int)); //array to be returned
     int temp_arr[4] = {left, top, right, bottom}; //array to be sorted
     int smallest =0;
-
-    // printf("Temp array: ");
-    // for (int i =0 ; i<4; i++){ //copying temp_arr to sortedArray
-    //     printf("%d ", temp_arr[i]);
-    // }
-    // printf("\n");
     
     for (int i = 0; i<4; i++){
         return_value[i] =i; //initializing return array to [0,1,2,3]
@@ -86,7 +88,6 @@ int* minimum_cost(short int arena_map[16][16], short int bot_pos[2], int *sorted
 }
 
 
- 
 int minimum_value_accessible_neighbors(short int arena_map[16][16], short int pos[2], int *smallest_accessible_regardless,bool wall_data[][16][4]){
     /*returns 0 for left, 1 for forward, 2 for right, 3 for back, -1 if no minimum accessible neighbors
     Function verified
@@ -95,14 +96,19 @@ int minimum_value_accessible_neighbors(short int arena_map[16][16], short int po
     int sortedArray[4]; 
     int *min_cost = minimum_cost(arena_map, pos, sortedArray);
 
-    // printf("Sorted array: ");
-    // for (int i =0; i< 4; i++){
-    //     printf("%d ", sortedArray[i]);
-    // }
-    // printf("\n");
+//        Serial.print(sortedArray[0]);
+//    Serial.print(" ");
+//    Serial.print(sortedArray[1]);
+//    Serial.print(" ");
+//    Serial.print(sortedArray[2]);
+//    Serial.print(" ");
+//    Serial.println(sortedArray[3]);
     
     for (int i =0; i< 4; i++){
-        
+    //   Serial.print("min: ");
+    //   Serial.println(sortedArray[i]);
+    //   Serial.print(" pos:");
+    //   Serial.println(min_cost[i]);
         if (arena_map[pos[0]][pos[1]]>sortedArray[i]){ //Checking if current node is greater than minimum accessible neighbors.
             // if (wall_array[min_cost[i]] == 0){ //Checking if node is accessible
             if (wall_data[pos[0]][pos[1]][min_cost[i]] == 0){ //Checking if node is accessible
@@ -190,7 +196,7 @@ int direction_wrt_compass(short int arena_map[16][16], short int bot_pos[2], boo
 
     do{
         min_access = minimum_value_accessible_neighbors(arena_map, bot_pos, &small, wall_data);
-        // printf("Min access: %d\n", min_access);
+
     // Serial.print("Direction: ");
     // Serial.println(min_access);
         
@@ -218,7 +224,6 @@ int direction_wrt_compass(short int arena_map[16][16], short int bot_pos[2], boo
 int direction_wrt_bot(short int arena_map[16][16], short int bot_pos[2], int facing, bool wall_data[][16][4]){
     /*Decide which direction the both should move in from its perspective*/
     int direction1 = direction_wrt_compass(arena_map, bot_pos, wall_data);
-    // printf("Direction wrt compass: %d\n", direction1);
 
     if (facing == direction1){
         //move forward
@@ -239,6 +244,7 @@ int direction_wrt_bot(short int arena_map[16][16], short int bot_pos[2], int fac
 }
 
 
+
 int main(){
 
     // int wall_array[16][16][4] = {
@@ -247,14 +253,15 @@ int main(){
     //     }
     // };
 
-    for (int i =0 ; i<16; i++){  //intializing wall array to 0 initially
-        for (int j =0; j<16; j++){
-            for (int k = 0; k<4; k++){
-                wall_data[i][j][k] = 0;
-            }
-        }
-    }
+    // for (int i =0 ; i<6; i++){  //intializing wall array to 0 initially
+    //     for (int j =0; j<6; j++){
+    //         for (int k = 0; k<4; k++){
+    //             wall_data[i][j][k] = 0;
+    //         }
+    //     }
+    // }
 
+ 
     short int arena_map[16][16] = {
     {14, 13, 12, 11, 10, 9, 8, 7, 7, 8, 9, 10, 11, 12, 13, 14},
     {13, 12, 11, 10,  9, 8, 7, 6, 6, 7, 8,  9, 10, 11, 12, 13},
@@ -272,18 +279,24 @@ int main(){
     {12, 11, 10,  9,  8, 7, 6, 5, 5, 6, 7,  8,  9, 10, 11, 12},
     {13, 12, 11, 10,  9, 8, 7, 6, 6, 7, 8,  9, 10, 11, 12, 13},
     {14, 13, 12, 11, 10, 9, 8, 7, 7, 8, 9, 10, 11, 12, 13, 14},
-    }; //arena node weight map
-
+    };
     short int position[2] = {15, 0};
     initialize_queue();
     int facing = 1;
 
     while (true){
+        
         printf("Wall data for current node: \n");
         for (int i =0 ; i<4; i++){
             int temp;
-            scanf("%d", &wall_data[position[0]][position[1]][i]);
+             scanf("%d", &wall_data[position[0]][position[1]][i]);
             printf("%d ", wall_data[position[0]][position[1]][i]);
+        }
+
+        if (arena_map[position[0]][position[1]] == 0){
+            printf("Reached center!\n");
+            return 0;
+            break;
         }
 
         int turn_direction = direction_wrt_bot(arena_map, position, facing, wall_data); //Decide direction to turn to so as to face the correct node
