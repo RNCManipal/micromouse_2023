@@ -12,6 +12,25 @@
 //     {{1,0,0,0},{0,1,1,0},{1,1,0,0},{0,1,0,1},{0,0,0,1},{0,1,1,1}},
 //     {{1,0,1,1},{1,0,0,1},{0,0,0,1},{0,1,0,1},{0,1,0,1},{0,1,1,1}}
 // };
+bool dup_arr[16][16][4]={
+  
+    {{1,1,0,0},{0,1,0,1},{0,1,0,1},{0,1,1,0},{1,1,0,0},{0,1,0,0},{0,1,1,0},{1,1,0,0},{0,1,0,1},{0,1,0,1},{0,1,0,0},{0,1,0,1},{0,1,0,1},{0,1,0,1},{0,1,0,1},{0,1,1,0}},
+    {{1,0,0,0},{0,1,1,1},{1,1,0,0},{0,0,1,1},{1,0,1,0},{1,0,1,0},{1,0,1,0},{1,0,0,0},{0,1,0,1},{0,1,1,0},{1,0,1,1},{1,1,1,0},{1,1,0,0},{0,1,0,1},{0,1,1,0},{1,0,1,0}},
+    {{1,0,0,1},{0,1,1,0},{1,0,0,1},{0,1,1,0},{1,0,1,0},{1,0,0,0},{0,0,1,0},{1,0,1,1},{1,1,0,0},{0,0,1,1},{1,1,0,0},{0,0,0,1},{0,0,1,1},{1,1,0,0},{0,0,0,1},{0,0,1,0}},
+    {{1,1,0,0},{0,0,1,1},{1,1,0,1},{0,0,1,0},{1,0,1,0},{1,0,1,0},{1,0,1,0},{1,1,0,0},{0,0,1,1},{1,1,0,0},{0,0,1,1},{1,1,0,0},{0,1,0,1},{0,0,1,1},{1,1,0,0},{0,0,1,1}},
+    {{1,0,1,0},{1,1,0,0},{0,1,0,1},{0,0,1,1},{1,0,1,0},{1,0,1,0},{1,0,0,0},{0,0,1,1},{1,1,0,0},{0,0,1,1},{1,1,1,0},{1,0,1,0},{1,1,0,0},{0,1,0,1},{0,0,1,1},{1,1,1,0}},
+    {{1,0,1,0},{1,0,0,1},{0,1,0,1},{0,1,1,0},{1,0,1,0},{1,0,0,1},{0,0,1,0},{1,1,1,0},{1,0,0,0},{0,1,0,1},{0,0,1,0},{1,0,1,0},{1,0,1,0},{1,1,1,0},{1,1,1,0},{1,0,1,0}},
+    {{1,0,1,0},{1,1,0,0},{0,1,1,1},{1,0,1,0},{1,0,0,0},{0,1,1,0},{1,0,1,1},{1,0,0,1},{0,0,1,1},{1,1,1,0},{1,0,1,0},{1,0,0,1},{0,0,0,0},{0,0,0,1},{0,0,0,1},{0,0,1,1}},
+    {{1,0,0,0},{0,0,1,0},{1,1,0,0},{0,0,1,1},{1,0,1,0},{1,0,0,1},{0,1,1,0},{1,1,0,0},{0,1,0,0},{0,0,0,1},{0,0,0,1},{0,1,1,1},{1,0,0,1},{0,1,0,0},{0,1,0,1},{0,1,1,0}},
+    {{1,0,1,1},{1,0,1,0},{1,0,0,1},{0,1,1,0},{1,0,0,0},{0,1,0,1},{0,0,1,1},{1,0,0,1},{0,0,1,1},{1,1,1,0},{1,1,0,0},{0,1,0,1},{0,1,1,0},{1,0,0,1},{0,1,0,0},{0,0,1,1}},
+    {{1,1,0,0},{0,0,0,1},{0,1,1,1},{1,0,0,1},{0,0,1,1},{1,1,0,0},{0,1,1,1},{1,1,0,0},{0,1,0,0},{0,0,0,1},{0,0,1,0},{1,1,1,0},{1,0,0,1},{0,1,1,0},{1,0,0,1},{0,1,1,0}},
+    {{1,0,0,0},{0,1,0,1},{0,1,0,1},{0,1,0,0},{0,1,0,1},{0,0,0,0},{0,1,1,1},{1,0,1,1},{1,0,0,1},{0,1,1,0},{1,0,1,0},{1,0,0,0},{0,1,1,1},{1,0,0,1},{0,1,0,1},{0,0,1,0}},
+    {{1,0,1,0},{1,1,0,0},{0,1,1,0},{1,0,0,1},{0,1,1,0},{1,0,0,1},{0,1,1,0},{1,1,0,0},{0,1,1,0},{1,0,0,0},{0,1,1,0},{1,0,0,1},{0,1,0,1},{0,1,0,1},{0,1,0,1},{0,0,1,1}},
+    {{1,0,0,0},{0,0,1,1},{1,0,0,1},{0,1,1,0},{1,0,0,1},{0,1,1,0},{1,0,1,0},{1,0,1,0},{1,0,1,0},{1,0,1,1},{1,0,0,1},{0,1,0,1},{0,1,0,1},{0,1,0,1},{0,1,0,1},{0,1,1,0}},
+    {{1,0,1,0},{1,1,0,0},{0,1,1,0},{1,0,0,1},{0,1,1,0},{1,0,0,1},{0,0,1,0},{1,0,1,0},{1,0,1,0},{1,1,0,1},{0,1,0,0},{0,1,0,1},{0,1,0,1},{0,1,0,1},{0,1,0,1},{0,0,1,1}},
+    {{1,0,1,0},{1,0,1,0},{1,0,0,1},{0,1,1,0},{1,0,0,1},{0,1,1,0},{1,0,1,0},{1,0,1,0},{1,0,1,0},{1,1,0,1},{0,0,0,1},{0,1,0,1},{0,1,0,1},{0,1,0,1},{0,1,0,1},{0,1,1,0}},
+    {{1,0,1,1},{1,0,0,1},{0,1,0,1},{0,0,0,1},{0,1,0,1},{0,0,0,1},{0,0,0,1},{0,0,1,1},{1,0,0,1},{0,1,0,1},{0,1,0,1},{0,1,0,1},{0,1,0,1},{0,1,0,1},{0,1,0,1},{0,0,1,1}},
+ };
 
 void swap(int *x, int *y){
     //Swaps values of two  numbers x and y. 
@@ -109,8 +128,8 @@ int minimum_value_accessible_neighbors(short int arena_map[16][16], short int po
     //   Serial.println(sortedArray[i]);
     //   Serial.print(" pos:");
     //   Serial.println(min_cost[i]);
+
         if (arena_map[pos[0]][pos[1]]>sortedArray[i]){ //Checking if current node is greater than minimum accessible neighbors.
-            // if (wall_array[min_cost[i]] == 0){ //Checking if node is accessible
             if (wall_data[pos[0]][pos[1]][min_cost[i]] == 0){ //Checking if node is accessible
                 return min_cost[i];
             }   
@@ -154,7 +173,9 @@ void rearrange_map(short int arena_map[16][16], short int base_pos[2],bool wall_
     while (!queue_empty()){
         poped = queue_pop();
         min_access = minimum_value_accessible_neighbors(arena_map, poped, &small, wall_data); //returns index of minimum value accessible neighbor
-
+        if (poped[0]<0 || poped[0]>15 || poped[1]<0 || poped[1]>15){
+            continue;
+        }
         if (min_access == -1){ //if all accessible neighbors have higher cost than current node
 
             arena_map[poped[0]][poped[1]] = small + 1;
@@ -222,7 +243,7 @@ int direction_wrt_compass(short int arena_map[16][16], short int bot_pos[2], boo
 
 
 int direction_wrt_bot(short int arena_map[16][16], short int bot_pos[2], int facing, bool wall_data[][16][4]){
-    /*Decide which direction the both should move in from its perspective*/
+    //Decide which direction the both should move in from its perspective
     int direction1 = direction_wrt_compass(arena_map, bot_pos, wall_data);
 
     if (facing == direction1){
@@ -246,21 +267,6 @@ int direction_wrt_bot(short int arena_map[16][16], short int bot_pos[2], int fac
 
 
 int main(){
-
-    // int wall_array[16][16][4] = {
-    //     {
-            
-    //     }
-    // };
-
-    // for (int i =0 ; i<6; i++){  //intializing wall array to 0 initially
-    //     for (int j =0; j<6; j++){
-    //         for (int k = 0; k<4; k++){
-    //             wall_data[i][j][k] = 0;
-    //         }
-    //     }
-    // }
-
  
     short int arena_map[16][16] = {
     {14, 13, 12, 11, 10, 9, 8, 7, 7, 8, 9, 10, 11, 12, 13, 14},
@@ -280,7 +286,7 @@ int main(){
     {13, 12, 11, 10,  9, 8, 7, 6, 6, 7, 8,  9, 10, 11, 12, 13},
     {14, 13, 12, 11, 10, 9, 8, 7, 7, 8, 9, 10, 11, 12, 13, 14},
     };
-    short int position[2] = {15, 0};
+    short int position[2] = {15,0};
     initialize_queue();
     int facing = 1;
 
@@ -289,9 +295,10 @@ int main(){
         printf("Wall data for current node: \n");
         for (int i =0 ; i<4; i++){
             int temp;
-             scanf("%d", &wall_data[position[0]][position[1]][i]);
+            wall_data[position[0]][position[1]][i] = dup_arr[position[0]][position[1]][i];
             printf("%d ", wall_data[position[0]][position[1]][i]);
         }
+        printf("\n");
 
         if (arena_map[position[0]][position[1]] == 0){
             printf("Reached center!\n");
@@ -300,12 +307,12 @@ int main(){
         }
 
         int turn_direction = direction_wrt_bot(arena_map, position, facing, wall_data); //Decide direction to turn to so as to face the correct node
-        printf("Turn direction: %d\n", turn_direction);
+        // printf("Turn direction: %d\n", turn_direction);
 
         switch (turn_direction)
             {
                 case 0:
-                    printf("Turn left\n");
+                    // printf("Turn left\n");
                     facing = facing - 1;
                     if (facing == -1){
                         facing = 3;
@@ -313,17 +320,17 @@ int main(){
                     break;
 
                 case 1:
-                    printf("Move forward\n");
+                    // printf("Move forward\n");
                     break; //Facing the correct node
 
                 case 2:
                     facing = (facing + 1)%4;
-                    printf("Turn right\n");
+                    // printf("Turn right\n");
                     break;
 
                 case 3:
                     facing = (facing + 2)%4;
-                    printf("Turn back\n");
+                    // printf("Turn back\n");
                     break;
 
                 default:
@@ -351,13 +358,13 @@ int main(){
 
             printf("Current position: %d %d\n", position[0], position[1]);
             printf("Current facing: %d\n", facing);
-            printf("Map data\n");
-            for (int i =0 ; i<16; i++){
-        for (int j =0; j<16; j++){
-            printf("%d ", arena_map[i][j]);
-        }
-        printf("\n");
-    }
+            // printf("Map data\n");
+            // for (int i =0 ; i<16; i++){
+            //     for (int j =0; j<16; j++){
+            //         printf("%d ", arena_map[i][j]);
+            //     }
+            //     printf("\n");
+            // }       
     }
 
     
