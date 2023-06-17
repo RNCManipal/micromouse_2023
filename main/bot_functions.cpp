@@ -284,6 +284,9 @@ void rearrange_map(short int arena_map[6][6], short int base_pos[2],bool wall_da
 
     while (!queue_empty()){
         poped = queue_pop();
+        if (poped[0]<0 || poped[0]>15 || poped[1]<0 || poped[1]>15){
+            continue;
+        }
         min_access = minimum_value_accessible_neighbors(arena_map, poped, &small, wall_data); //returns index of minimum value accessible neighbor
 
         if (min_access == -1){ //if all accessible neighbors have higher cost than current node
