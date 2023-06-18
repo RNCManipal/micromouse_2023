@@ -4,14 +4,7 @@
 #include "data_structures.c"
 
  bool wall_data[16][16][4];
- //={
-//     {{1,1,1,0},{1,1,0,0},{0,1,0,1},{0,1,1,0},{1,1,1,0},{1,1,1,0}},
-//     {{1,0,0,1},{0,0,1,0},{1,1,0,1},{0,0,0,1},{0,0,1,0},{1,0,1,0}},
-//     {{1,1,1,0},{1,0,1,0},{1,1,0,0},{0,1,0,0},{0,0,1,0},{1,0,1,0}},
-//     {{1,0,0,0},{0,0,1,1},{1,0,0,1},{0,0,1,1},{1,0,0,0},{0,0,1,1}},
-//     {{1,0,0,0},{0,1,1,0},{1,1,0,0},{0,1,0,1},{0,0,0,1},{0,1,1,1}},
-//     {{1,0,1,1},{1,0,0,1},{0,0,0,1},{0,1,0,1},{0,1,0,1},{0,1,1,1}}
-// };
+
 
 void swap(int *x, int *y){
     //Swaps values of two  numbers x and y. 
@@ -154,7 +147,9 @@ void rearrange_map(short int arena_map[16][16], short int base_pos[2],bool wall_
     while (!queue_empty()){
         poped = queue_pop();
         min_access = minimum_value_accessible_neighbors(arena_map, poped, &small, wall_data); //returns index of minimum value accessible neighbor
-
+        if (poped[0]<0 || poped[0]>15 || poped[1]<0 || poped[1]>15){
+            continue;
+        }
         if (min_access == -1){ //if all accessible neighbors have higher cost than current node
 
             arena_map[poped[0]][poped[1]] = small + 1;
@@ -183,6 +178,11 @@ void rearrange_map(short int arena_map[16][16], short int base_pos[2],bool wall_
                     }
                 }
             }
+            // queue_push(poped[0], poped[1] - 1);
+            // queue_push(poped[0] - 1, poped[1]);
+            // queue_push(poped[0], poped[1] + 1);
+            // queue_push(poped[0] + 1, poped[1]);
+
         }
     }
 }
@@ -222,7 +222,7 @@ int direction_wrt_compass(short int arena_map[16][16], short int bot_pos[2], boo
 
 
 int direction_wrt_bot(short int arena_map[16][16], short int bot_pos[2], int facing, bool wall_data[][16][4]){
-    /*Decide which direction the both should move in from its perspective*/
+    //Decide which direction the both should move in from its perspective
     int direction1 = direction_wrt_compass(arena_map, bot_pos, wall_data);
 
     if (facing == direction1){
@@ -242,7 +242,6 @@ int direction_wrt_bot(short int arena_map[16][16], short int bot_pos[2], int fac
 
     return 3;
 }
-
 
 
 int main(){
@@ -289,7 +288,19 @@ int main(){
         printf("Wall data for current node: \n");
         for (int i =0 ; i<4; i++){
             int temp;
-             scanf("%d", &wall_data[position[0]][position[1]][i]);
+            scanf("%d", &wall_data[position[0]][position[1]][i]);
+            if(!(position[1]-1<0)){
+                wall_data[position[0]][position[1]-1][2]=wall_data[position[0]][position[1]][0];
+            }
+            if(!(position[0]-1<0)){
+                wall_data[position[0]-1][position[1]][3]=wall_data[position[0]][position[1]][1];
+            }    
+            if(!(position[1]+1>5)){
+                wall_data[position[0]][position[1]+1][0]=wall_data[position[0]][position[1]][2];
+            }     
+            if(!(position[0]+1>5)){
+                wall_data[position[0]+1][position[1]][1]=wall_data[position[0]][position[1]][3];
+            }
             printf("%d ", wall_data[position[0]][position[1]][i]);
         }
 
