@@ -21,7 +21,7 @@ void swap(int *x, int *y){
     *y = temp;
 }
 
-int* minimum_cost(short int arena_map[6][6], short int bot_pos[2], int *sortedArray){
+int* minimum_cost(short int arena_map[16][16], short int bot_pos[2], int *sortedArray){
     /*
         returns array with [0,1,2,3] as [l,s,r,b] in ascending order of their weights
         Function verified
@@ -38,7 +38,7 @@ int* minimum_cost(short int arena_map[6][6], short int bot_pos[2], int *sortedAr
         top = arena_map[bot_pos[0] - 1][bot_pos[1]];
     }
 
-    if (bot_pos[0] == 5){ //if bot is at bottom row
+    if (bot_pos[0] == 15){ //if bot is at bottom row
         bottom = 1000;
     }
     else{
@@ -52,7 +52,7 @@ int* minimum_cost(short int arena_map[6][6], short int bot_pos[2], int *sortedAr
         left = arena_map[bot_pos[0]][bot_pos[1] - 1];
     }
 
-    if (bot_pos[1] == 5){ //if bot is at rightmost column
+    if (bot_pos[1] == 15){ //if bot is at rightmost column
         right = 1000;
     }
     else{
@@ -112,7 +112,7 @@ bool thresHold(int distance){
     }
 }
 
-void detect_wall(int face, short int pos[2],bool wall_data[][6][4]){
+void detect_wall(int face, short int pos[2],bool wall_data[][16][4]){
     /*returns an array [l, s, r, b] with 1 if wall is detected and 0 if not
                        [0,1,2,3]
     ____ s1____    
@@ -209,17 +209,29 @@ void detect_wall(int face, short int pos[2],bool wall_data[][6][4]){
         break;
     }
 
-      // fill the return array with keys values of the map accordingly in the return array
-      Serial.print("Wall data: ");
-      for(int i =0;i<4;i++){
+    // fill the return array with keys values of the map accordingly in the return array
+    Serial.print("Wall data: ");
+    for(int i =0;i<4;i++){
         wall_data[pos[0]][pos[1]][i] = map_get(map,i);
         Serial.print(wall_data[pos[0]][pos[1]][i]);
-    Serial.print(" ");
-      }
-      Serial.println();
+        if(!(position[1]-1<0)){
+            wall_data[position[0]][position[1]-1][2]=wall_data[position[0]][position[1]][0];
+        }
+        if(!(position[0]-1<0)){
+            wall_data[position[0]-1][position[1]][3]=wall_data[position[0]][position[1]][1];
+        }    
+        if(!(position[1]+1>5)){
+            wall_data[position[0]][position[1]+1][0]=wall_data[position[0]][position[1]][2];
+        }     
+        if(!(position[0]+1>5)){
+            wall_data[position[0]+1][position[1]][1]=wall_data[position[0]][position[1]][3];
+        }
+        Serial.print(" ");
+    }
+    Serial.println();
 }
 
-int minimum_value_accessible_neighbors(short int arena_map[6][6], short int pos[2], int *smallest_accessible_regardless,bool wall_data[][6][4]){
+int minimum_value_accessible_neighbors(short int arena_map[16][16], short int pos[2], int *smallest_accessible_regardless,bool wall_data[][16][4]){
     /*returns 0 for left, 1 for forward, 2 for right, 3 for back, -1 if no minimum accessible neighbors
     Function verified
     */
@@ -274,7 +286,7 @@ int minimum_value_accessible_neighbors(short int arena_map[6][6], short int pos[
     }
 }
 
-void rearrange_map(short int arena_map[6][6], short int base_pos[2],bool wall_data[][6][4]){
+void rearrange_map(short int arena_map[16][16], short int base_pos[2],bool wall_data[][16][4]){
     //Changes value of map node cost in case the current node has a strictly lower cost than all of its accessible neighbors. Function verified
 
     queue_push(base_pos[0], base_pos[1]); //pushing base node to queue
@@ -286,6 +298,9 @@ void rearrange_map(short int arena_map[6][6], short int base_pos[2],bool wall_da
         poped = queue_pop();
         min_access = minimum_value_accessible_neighbors(arena_map, poped, &small, wall_data); //returns index of minimum value accessible neighbor
 
+        if (poped[0]<0 || poped[0]>15 || poped[1]<0 || poped[1]>15){
+            continue;
+        }
         if (min_access == -1){ //if all accessible neighbors have higher cost than current node
 
             arena_map[poped[0]][poped[1]] = small + 1;
@@ -318,7 +333,7 @@ void rearrange_map(short int arena_map[6][6], short int base_pos[2],bool wall_da
     }
 }
 
-int direction_wrt_compass(short int arena_map[6][6], short int bot_pos[2], bool wall_data[][6][4]){
+int direction_wrt_compass(short int arena_map[16][16], short int bot_pos[2], bool wall_data[][16][4]){
     // Checks which direction to move in wrt to a compass. i.e 0=>East, 1=>North, 2=>West, 3=>South. Function unverified
 
     int *smallest_value;
@@ -352,7 +367,7 @@ int direction_wrt_compass(short int arena_map[6][6], short int bot_pos[2], bool 
 }
 
 
-int direction_wrt_bot(short int arena_map[6][6], short int bot_pos[2], int facing, bool wall_data[][6][4]){
+int direction_wrt_bot(short int arena_map[16][16], short int bot_pos[2], int facing, bool wall_data[][16][4]){
     /*Decide which direction the both should move in from its perspective*/
     int direction1 = direction_wrt_compass(arena_map, bot_pos, wall_data);
 
