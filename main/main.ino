@@ -220,7 +220,7 @@ void loop(){
                     break;
             }
             
-            p2p_pid(26); //Move forward 25 cms
+            p2p_pid(26); //Move forward 26 cms
             brake();
         }
 
