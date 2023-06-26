@@ -93,6 +93,7 @@ void map_update(Map *map, int key, int value);
 //PID Codes
 //pid.c
 void p2p_pid(int dist);
+void calculate_enc_counts(int dist);
 void sens_pid();
 void turn(int angle);
 void composite_pid(int dist);

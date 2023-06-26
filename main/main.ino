@@ -102,7 +102,7 @@ void setup(){
 
     
 }
-int turn_direction;
+// int turn_direction;
 
 // short int arena_map[16][16] = {
 //     {14, 13, 12, 11, 10, 9, 8, 7, 7, 8, 9, 10, 11, 12, 13, 14},
@@ -138,118 +138,86 @@ int facing = 1; // 0 = East, 1 = North, 2 = West, 3 = South
 int found = 0;
 
 void loop(){
+
+    found = 0;
     facing = 1;
     pos[0] = 5;
     pos[1] = 0; //Initializing bot information
     Serial.println("starting ");
-    if (digitalRead(buttonpin) == 1){ //If button is pressed, start bot
-    
-        while (!found){
 
-          Serial.println("Facing: ");
-             Serial.print(pos[0]);
-             Serial.println(pos[1]);
+    if (digitalRead(buttonpin) == 1){ //If button is pressed, start bot
+        Serial.println("Button Pressed");
+        while(!found){
 
             if (arena_map[pos[0]][pos[1]] == 0){ //Found the center
                 found = 1;
+                Motor_SetSpeed(0, 0);
+                Serial.println("Found center!");
                 break;
             }
 
-            for (int g= 0 ; g<6; g++){
-              for (int p =0 ; p<6; p++){
-                Serial.print(arena_map[g][p]);
-                Serial.print(" ");
-              }
-              Serial.println();
+            if (digitalRead(buttonpin) == 1){
+                Serial.println("Button Pressed, Stopping bot");
+                Motor_SetSpeed(0, 0);
+                break;
             }
-            
-            detect_wall(facing, pos,wall_data); //Detect walls on current node
 
-            int turn_direction = direction_wrt_bot(arena_map, pos, facing, wall_data); //Decide direction to turn to so as to face the correct node
-            Serial.println(turn_direction);
-            
-            switch (turn_direction)
-            {
-                case 0:
-                    gyro_pid(-90); //Turn Left
-                    facing = facing - 1;
-                    if (facing == -1){
-                        facing = 3;
-                    }
-                    break;
+            Motor_SetSpeed(140, 140);
+            while (count != calculate_enc_counts(14)){ //Waiting till bot travels 14 cm
+            }
 
-                case 1:
-                    break; //Facing the correct node
+            detect_wall(facing, pos,wall_data);//position should be of next cell
+            int turn_direction = direction_wrt_bot(arena_map, pos, facing, wall_data);
 
-                case 2:
-                    facing = (facing + 1)%4;
-                    gyro_pid (90); //Turn Right
-                    break;
+            if(turn_direction !=1){ 
+                while(count != calculate_enc_counts(26)){}; 
+                Motor_SetSpeed(0, 0); //Need to apply pid here
+                count=0;
 
-                case 3:
-                    facing = (facing + 2)%4;
-                    gyro_pid(90);  //Turn Back
-                    gyro_pid(90);  //Turn Back
-                    break;
-
-                default:
-                    Serial.println("Not possible");
-                    break;
+                switch (turn_direction){
+                    case 0:
+                        gyro_pid(-90); //Turn Left
+                        facing = facing - 1;
+                        if (facing == -1){
+                            facing = 3;
+                        }
+                        break;  
+                    case 2:
+                        facing = (facing + 1)%4;
+                        gyro_pid (90); //Turn Right
+                        break;  
+                    case 3:
+                        facing = (facing + 2)%4;
+                        gyro_pid(90);  //Turn Back
+                        gyro_pid(90);  //Turn Back
+                        break;  
+                    default:
+                        Serial.println("Not possible");
+                        break;
+                }
+            }
+            else{
+                while(count != calculate_enc_counts(26)){};
+                count=0;
             }
 
             switch(facing){ //Update current position
                 case 0:
                     pos[1] -= 1;
-                    break;
-
+                    break   
                 case 1:
                     pos[0] -= 1;
-                    break;
-
+                    break   
                 case 2:
                     pos[1] += 1;
-                    break;
-
+                    break   
                 case 3:
                     pos[0] += 1;
                     break;
             }
-            
-            p2p_pid(26); //Move forward 25 cms
-            brake();
         }
-
-        found =0;
     }
 }
-
-//double gyro_pid(int angle) {
-//  int curr_angle = mpu.getAngleZ();  //fetch_angle()
-//  int req_angle = curr_angle - angle;
-//
-//  double error = 0, lasterror = 0, pv = 0;
-//
-//  while (1) {
-//    error = req_angle - mpu.getAngleZ();  // fetch_angle()
-//    pv = kp3 * error + kd3 * (error - lasterror);
-//    lasterror = error;
-//
-//    Serial.print(error);
-//    Serial.print(" Hello ");
-//    Serial.println(mpu.getAngleZ());
-//
-//    if (pv >= -0.1 && pv <= 0.1) {
-//      brake();
-//      break;
-//    } else if (pv > 0) {
-//      int speed = min(max(pv, 50), 200);
-//      Motor_SetSpeed(speed, -speed);
-//    } else {
-//      int speed = min(max(pv, -200), -50);
-//      Motor_SetSpeed(speed, -speed);
-//    }
-//  }
-//}
 
 double gyro_pid(int angle) {
   int curr_angle = int(mpu.getAngleZ())%360;  //fetch_angle()

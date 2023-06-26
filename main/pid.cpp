@@ -3,7 +3,12 @@
 #include "bot_functions.h"
 #include <MPU6050_light.h>
 
-
+int calculate_enc_counts(int dist){
+  //Calculates the number of encoder counts required to travel a given distance
+  double rotatn_req= (dist/WHEEL_DIAMETER); // number of rotations of wheel required to complete given distance
+  double setpnt_counts=(rotatn_req )* (counts_per_rotation); // number of counts required to reach the set point(inshort this is our setpoint)
+  return setpnt_counts;
+}
 
 
 void p2p_pid(int dist) {
