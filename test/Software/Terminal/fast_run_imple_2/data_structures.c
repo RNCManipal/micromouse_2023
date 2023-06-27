@@ -1,6 +1,8 @@
 #include <stdio.h>
+#include <iostream>
 #include <stdlib.h>
 #include <stdbool.h>
+using namespace std;
 #define MAX_SIZE 4 
 #define SIZE 260
 
@@ -140,6 +142,32 @@ void map_update(Map *map, int key, int value) {
     printf("Key not found in map!\n");
 }
 
+class Node{
+  public:
+  int data1;
+  int data2;
+  Node* next;
+
+    Node(){
+        this->data1=-1;
+        this->data2=-1;
+        this->next=NULL;
+    }
+
+    Node(int data1, int data2){
+        this->data1=-1;
+        this->data2=-1;
+        this->next=NULL;
+    }
+
+    ~Node(){
+    int val=this->data1;
+    if(this->next!=NULL){
+        delete next;
+        this->next=NULL;
+    }
+ } 
+};
 // int main(){
 //     initialize_queue();
 //     int ch = 0;
