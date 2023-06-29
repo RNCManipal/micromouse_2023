@@ -30,8 +30,9 @@ int mtrspd1=PWMA ;
 int mtrspd2=PWMB;
 
 double kp1=0.2, ki1, kd1=1;
-//Not using KP2, kd2
+double kp2=0.2, ki2, kd2=1;
 double kp3=0.2, ki3, kd3=1;
+
 int threshold = 9;
 int counts_per_rotation = 520;
 
@@ -46,20 +47,30 @@ int buttonpin =A0;
 bool wall_data[6][6][4];
 
 
-int count = 0;
+int count_left = 0;
+int count_right = 0;
 
-void readEncoder (){
+void readEncoder_right (){
+    int a = digitalRead(ENCC);
+    if(a > 0){
+       count_right++; //count is current encoder count 
+    } else{
+       count_right--;
+    }
+}
+
+void readEncoder_left (){
     int b = digitalRead(ENCB);
     if(b > 0){
-       count++; //count is current encoder count 
+       count_left++; //count is current encoder count 
     } else{
-       count--;
+       count_left--;
     }
 }
 
 void setup(){
   Serial.begin(9600);
-  count = 0;
+  count_left = 0;
   byte status = mpu.begin();
   Serial.print(F("MPU6050 status: "));
   Serial.println(status);
@@ -90,7 +101,9 @@ void setup(){
   pinMode(sens_trig2,OUTPUT);
   pinMode(sens_trig3,OUTPUT);
 
-  attachInterrupt(digitalPinToInterrupt(ENCA),readEncoder,RISING);
+  attachInterrupt(digitalPinToInterrupt(ENCA),readEncoder_left,RISING);
+  attachInterrupt(digitalPinToInterrupt(ENCB),readEncoder_right,RISING);
+  
     for (int i =0 ; i<6; i++){  //intializing wall array to 0 initially
         for (int j =0; j<6; j++){
             for (int k = 0; k<4; k++){

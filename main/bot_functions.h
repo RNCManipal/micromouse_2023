@@ -38,7 +38,8 @@ extern int ENCA, ENCB, ENCC, ENCD;
 extern int buttonpin ;
 
 //Constants
-extern int count;
+extern int count_left;
+extern int count_right;
 extern bool wall_data[6][6][4];
 
 
