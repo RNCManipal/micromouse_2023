@@ -45,7 +45,7 @@ int sens_trig3 =A4, sens_echo3 =A5;
 int buttonpin =A0;
 bool wall_data[6][6][4];
 
-
+int forward_speed = 140;
 int count = 0;
 
 void readEncoder (){
@@ -60,14 +60,16 @@ void readEncoder (){
 void setup(){
   Serial.begin(9600);
   count = 0;
+
+  //Setting up MPU6050
   byte status = mpu.begin();
   Serial.print(F("MPU6050 status: "));
   Serial.println(status);
   while(status!=0){Serial.println("Not Connected"); } // stop everything if could not connect to MPU6050
-  
   Serial.println(F("Calculating offsets, do not move MPU6050"));
   mpu.calcOffsets(); // gyro and accelero
   Serial.println("Done!\n");
+
   pinMode(ENCA,INPUT);
   pinMode(ENCB,INPUT);
   pinMode(ENCC,INPUT);
@@ -162,16 +164,16 @@ void loop(){
                 break;
             }
 
-            Motor_SetSpeed(140, 140);
-            while (count != calculate_enc_counts(14)){ //Waiting till bot travels 14 cm
+            Motor_SetSpeed(forward_speed, forward_speed);
+            while (count < calculate_enc_counts(14)){ //Waiting till bot travels 14 cm
             }
 
             detect_wall(facing, pos,wall_data);//position should be of next cell
             int turn_direction = direction_wrt_bot(arena_map, pos, facing, wall_data);
 
             if(turn_direction !=1){ 
-                while(count != calculate_enc_counts(26)){}; 
-                Motor_SetSpeed(0, 0); //Need to apply pid here
+                p2p_pid(calculate_enc_counts(26) - count); //Move forward until 26cm worth of encoder counts
+                Motor_SetSpeed(0, 0);
                 count=0;
 
                 switch (turn_direction){

@@ -5,23 +5,17 @@
 
 int calculate_enc_counts(int dist){
   //Calculates the number of encoder counts required to travel a given distance
+  
   double rotatn_req= (dist/WHEEL_DIAMETER); // number of rotations of wheel required to complete given distance
   double setpnt_counts=(rotatn_req )* (counts_per_rotation); // number of counts required to reach the set point(inshort this is our setpoint)
   return setpnt_counts;
 }
 
 
-void p2p_pid(int dist) {
-  // PID Controller. Used to control the speed of the bot. Function
-  double rotatn_req = (dist /(3.14*WHEEL_DIAMETER)); // number of rotations ofwheel required to complete given distance
-
-  // let encoder giving 'x' number of counts per rotation
-  double setpnt_counts =(rotatn_req) * (520); // number of counts requiredto reach the set point(inshort this is our setpoint)
-  //Serial.print("setpnt_counts");
+void p2p_pid(int setpnt_counts) {
+  // PID Controller. Used to control the speed of the bot.
   count=0;
   double lasterror = 0;
-  double kp1 = 0.2;
-  double kd1 = 1.0;
   double last_error = 0, error = 0;
   double pv = 0;
 
@@ -31,7 +25,7 @@ void p2p_pid(int dist) {
     while (1) {
 
       error = (count) - (setpnt_counts);
-       Serial.print(error);
+      Serial.print(error);
       if (lasterror ==0) { // this condition is used to remove intial high gain in velocity
         pv = kp1 * error;
       } else {
@@ -39,29 +33,28 @@ void p2p_pid(int dist) {
       }
 
       Serial.print(" ");
-       Serial.println(pv);
-      // pv= mapp(pv, -maxerror, maxerror, -255, 255);
-      if (pv >= -0.3 && pv <= 0.3) { // Assuming lower and upper thresholds of speed of motors are 50, 200 respectively
-         brake();
-      
+      Serial.println(pv);
 
+      if (pv >= -0.3 && pv <= 0.3) { // Assuming lower and upper thresholds of speed of motors are 50, 200 respectively
+        brake();
         break;
-      } else if (pv > 0) {
+      }
+      else if (pv > 0) {
         int speed = min(max(pv, 50), 200);
         Motor_SetSpeed(-speed, -speed); //Set the parameters later.
         // theseparameters are speed of left and right wheel and will be
         // forforward motion since pv>=0
       
-      } else {
+      } 
+      else {
         int speed = min(max(pv, -200), -50);
-        
         Motor_SetSpeed(speed, speed); //Set the parameters later.
         // theseparameters are speed of left and right wheel and will be
         // forforward motion since pv>=0
-
       }
     }
-  } else if (setpnt_counts > 0) {
+  } 
+  else if (setpnt_counts > 0) {
     while (1) {
       
       error = (setpnt_counts) -(count); // x is the number of encoder countsper revolution
