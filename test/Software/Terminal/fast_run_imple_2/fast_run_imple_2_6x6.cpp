@@ -391,36 +391,12 @@ int direction_wrt_compass(short int arena_map[6][6], short int bot_pos[2], bool 
 }
 
 
-int direction_wrt_bot_fast_run(short int arena_map[6][6], short int bot_pos[2], int facing, bool wall_data[][6][4]){
+int direction_wrt_bot_fast_run(short int arena_map[6][6], short int bot_pos[2], int fast_run_facing, bool wall_data[][6][4]){
     //Decide which direction the both should move in from its perspective
     int direction1 = direction_wrt_compass_fast_run(arena_map, bot_pos, wall_data);
     if(direction1==-1){
       return-1;
     }
-    if (facing == direction1){
-        //move forward
-        return 1;
-    }
-
-    else if (((facing+1)%4 == direction1)){
-        //turn right
-        return 2;
-    }
-
-    else if (facing == (direction1+1)%4){
-        //turn left 
-        return 0;
-    }
-
-    return 3;
-}
-
-
-
-int direction_wrt_bot(short int arena_map[6][6], short int bot_pos[2], int fast_run_facing, bool wall_data[][6][4]){
-    //Decide which direction the both should move in from its perspective
-    int direction1 = direction_wrt_compass(arena_map, bot_pos, wall_data);
-
     if (fast_run_facing == direction1){
         //move forward
         return 1;
@@ -432,6 +408,30 @@ int direction_wrt_bot(short int arena_map[6][6], short int bot_pos[2], int fast_
     }
 
     else if (fast_run_facing == (direction1+1)%4){
+        //turn left 
+        return 0;
+    }
+
+    return 3;
+}
+
+
+
+int direction_wrt_bot(short int arena_map[6][6], short int bot_pos[2], int facing, bool wall_data[][6][4]){
+    //Decide which direction the both should move in from its perspective
+    int direction1 = direction_wrt_compass(arena_map, bot_pos, wall_data);
+
+    if (facing == direction1){
+        //move forward
+        return 1;
+    }
+
+    else if (((facing+1)%4 == direction1)){
+        //turn right
+        return 2;
+    }
+
+    else if (facing == (direction1+1)%4){
         //turn left 
         return 0;
     }
