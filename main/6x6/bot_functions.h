@@ -58,13 +58,20 @@ typedef struct {
 //bot_functions.c
 //Flood-fill Code
 void swap(int *x, int *y);
+int* minimum_cost_fast_run(short int arena_map[6][6], short int bot_pos[2], int *sortedArray_fast_run);
 int* minimum_cost(short int arena_map[6][6], short int bot_pos[2], int *sortedArray);
 void detect_wall(int face, short int pos[2],bool wall_data[][6][4]);
+int minimum_value_accessible_neighbors_fast_run(short int arena_map[6][6], short int pos[2], int *smallest_accessible_regardless_fast_run,bool wall_data[][6][4]);
 int minimum_value_accessible_neighbors(short int arena_map[6][6], short int pos[2], int *smallest_accessible_regardless,bool wall_data[][6][4]);
 void rearrange_map(short int arena_map[6][6], short int base_pos[2],bool wall_data[][6][4]);
 bool thresHold(int distance);
+int direction_wrt_compass_fast_run(short int arena_map[6][6], short int bot_pos[2], bool wall_data[][6][4]);
 int direction_wrt_compass(short int arena_map[6][6], short int bot_pos[2],bool wall_data[][6][4]);
+int direction_wrt_bot_fast_run(short int arena_map[6][6], short int bot_pos[2], int fast_run_facing, bool wall_data[][6][4]);
 int direction_wrt_bot(short int arena_map[6][6], short int bot_pos[2], int facing,bool wall_data[][6][4]);
+int find_req_facing(int turn_direction, int facing);
+Node* known_path_travel( short int fast_run_position[2],short int arena_map[6][6],int fast_run_facing, int &facing, short int position[2]);
+void movebot(Node* &head);
 
 //movement.c
 //Bot Movement functions
@@ -89,6 +96,12 @@ Map *map_init();
 void map_put(Map *map, int key, int value);
 int map_get(Map *map, int key);
 void map_update(Map *map, int key, int value);
+
+
+//Linked List
+void insert_data_in_Node(Node* tail, int count_s, int req_count_90_turns);
+
+
 
 //PID Codes
 //pid.c

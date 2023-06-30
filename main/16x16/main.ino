@@ -43,7 +43,7 @@ int sens_trig3 =A4, sens_echo3 =A5;
 
 
 int buttonpin =A0;
-bool wall_data[6][6][4];
+bool wall_data[16][16][4];
 
 
 int count = 0;
@@ -91,8 +91,8 @@ void setup(){
   pinMode(sens_trig3,OUTPUT);
 
   attachInterrupt(digitalPinToInterrupt(ENCA),readEncoder,RISING);
-    for (int i =0 ; i<6; i++){  //intializing wall array to 0 initially
-        for (int j =0; j<6; j++){
+    for (int i =0 ; i<16; i++){  //intializing wall array to 0 initially
+        for (int j =0; j<16; j++){
             for (int k = 0; k<4; k++){
                 wall_data[i][j][k] = 0;
             }
@@ -104,7 +104,10 @@ void setup(){
 }
 int turn_direction;
 
+
+
 short int arena_map[16][16] = {
+    
     {14, 13, 12, 11, 10, 9, 8, 7, 7, 8, 9, 10, 11, 12, 13, 14},
     {13, 12, 11, 10,  9, 8, 7, 6, 6, 7, 8,  9, 10, 11, 12, 13},
     {12, 11, 10,  9,  8, 7, 6, 5, 5, 6, 7,  8,  9, 10, 11, 12},
@@ -121,107 +124,146 @@ short int arena_map[16][16] = {
     {12, 11, 10,  9,  8, 7, 6, 5, 5, 6, 7,  8,  9, 10, 11, 12},
     {13, 12, 11, 10,  9, 8, 7, 6, 6, 7, 8,  9, 10, 11, 12, 13},
     {14, 13, 12, 11, 10, 9, 8, 7, 7, 8, 9, 10, 11, 12, 13, 14},
+    
+    
 }; //arena node weight map
 
-// short int arena_map[6][6] = {
-//     {4, 3, 2, 2, 3, 4},
-//     {3, 2, 1, 1, 9, 3},
-//     {2, 1, 0, 0, 1, 2},
-//     {2, 1, 0, 0, 1, 2},
-//     {3, 2, 1, 1, 6, 3},
-//     {4, 3, 2, 2, 3, 4},
-    
-// }; //arena node weight map
 
-short int pos[2] = {15, 0}; //Current position of bot
+bool visited[16][16]={
+    
+    {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+    {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+    {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+    {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+    {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+    {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+    {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+    {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+    {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+    {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+    {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+    {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+    {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+    {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+    {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+    {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+};
+
+
+short int position[2] = {15, 0}; //Current position of bot
+visited[position[0]][position[1]]=1;
 int facing = 1; // 0 = East, 1 = North, 2 = West, 3 = South
 int found = 0;
+int fast_run_facing;
+int flag=0;
 
 void loop(){
     facing = 1;
-    pos[0] = 15;
-    pos[1] = 0; //Initializing bot information
+    position[0] = 15;
+    position[1] = 0; //Initializing bot information
     Serial.println("starting ");
     if (digitalRead(buttonpin) == 1){ //If button is pressed, start bot
-    
+       
         while (!found){
 
           Serial.println("Facing: ");
              Serial.print(pos[0]);
              Serial.println(pos[1]);
 
-            if (arena_map[pos[0]][pos[1]] == 0){ //Found the center
+            if (arena_map[position[0]][position[1]] == 0){ //Found the center
                 found = 1;
                 printf("Reached center!\n");
-                break;
+                //if (digitalRead(buttonpin) == 1)  want this statement here
+                position[0] = {15};
+                position[1]= {0};
+                int facing = 1;
+                continue;// study for using continu; here  here in terminal code continue is there.
             }
 
-            for (int g= 0 ; g<6; g++){
-              for (int p =0 ; p<6; p++){
+            for (int g= 0 ; g<16; g++){
+              for (int p =0 ; p<16; p++){
                 Serial.print(arena_map[g][p]);
                 Serial.print(" ");
               }
               Serial.println();
             }
-            
-            detect_wall(facing, pos,wall_data); //Detect walls on current node
 
-            int turn_direction = direction_wrt_bot(arena_map, pos, facing, wall_data); //Decide direction to turn to so as to face the correct node
-            Serial.println(turn_direction);
-            
-            switch (turn_direction)
-            {
-                case 0:
-                    // printf("Turn left\n");
-                    gyro_pid(-90); //Turn Left
-                    facing = facing - 1;
-                    if (facing == -1){
-                        facing = 3;
-                    }
-                    break;
+            short int fast_run_position[2];
+            fast_run_position[0]=position[0];
+            fast_run_position[1]=position[1];
+            fast_run_facing=facing;
 
-                case 1:
-                    // printf("Move forward\n");
-                    break; //Facing the correct node
+            if(visited[position[0]][position[1]]==1 && flag==1){
+                cout<<"Fast run started for position "<<" { "<<position[0]<<" , "<<position[1]<<" } "<<endl;
 
-                case 2:
-                    facing = (facing + 1)%4;
-                    gyro_pid (90); //Turn Right
-                    // printf("Turn right\n");
-                    break;
+                Node* head=known_path_travel(fast_run_position,arena_map,fast_run_facing,facing,position);
+                movebot(head);
 
-                case 3:
-                    facing = (facing + 2)%4;
-                    gyro_pid(90);  //Turn Back
-                    gyro_pid(90);  //Turn Back
-                    // printf("Turn back\n");
-                    break;
-
-                default:
-                    Serial.println("Not possible");
-                    break;
+                cout<<"Fast run ended for position "<<" { "<<position[0]<<" , "<<position[1]<<" } "<<endl;
             }
 
-            switch(facing){ //Update current position
-                case 0:
-                    pos[1] -= 1;
-                    break;
+            cout<<" making "<<position[0]<< ", " <<position[1]<< " visited"<<endl;
+            visited[position[0]][position[1]]=1;
+            if(arena_map[position[0]][position[1]]!=0){
+                detect_wall(facing, pos,wall_data); //Detect walls on current node
 
-                case 1:
-                    pos[0] -= 1;
-                    break;
-
-                case 2:
-                    pos[1] += 1;
-                    break;
-
-                case 3:
-                    pos[0] += 1;
-                    break;
-            }
+                int turn_direction = direction_wrt_bot(arena_map, pos, facing, wall_data); //Decide direction to turn to so as to face the correct node
+                Serial.println(turn_direction);
             
-            p2p_pid(26); //Move forward 26 cms
-            brake();
+                switch (turn_direction)
+                {
+                    case 0:
+                        // printf("Turn left\n");
+                        gyro_pid(-90); //Turn Left
+                        facing = facing - 1;
+                        if (facing == -1){
+                            facing = 3;
+                        }
+                        break;
+
+                    case 1:
+                        // printf("Move forward\n");
+                        break; //Facing the correct node
+
+                    case 2:
+                        facing = (facing + 1)%4;
+                        gyro_pid (90); //Turn Right
+                        // printf("Turn right\n");
+                        break;
+
+                    case 3:
+                        facing = (facing + 2)%4;
+                        gyro_pid(90);  //Turn Back
+                        gyro_pid(90);  //Turn Back
+                        // printf("Turn back\n");
+                        break;
+
+                    default:
+                        Serial.println("Not possible");
+                        break;
+                }
+
+                switch(facing){ //Update current position
+                    case 0:
+                        pos[1] -= 1;
+                        break;
+
+                    case 1:
+                        pos[0] -= 1;
+                        break;
+
+                    case 2:
+                        pos[1] += 1;
+                        break;
+
+                    case 3:
+                        pos[0] += 1;
+                        break;
+                }
+            
+                p2p_pid(26); //Move forward 26 cms
+                brake();
+            }
         }
 
         found =0;
