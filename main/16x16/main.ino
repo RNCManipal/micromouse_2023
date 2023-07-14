@@ -180,6 +180,11 @@ void loop(){
                 continue;// study for using continu; here  here in terminal code continue is there.
             }
 
+            if (digitalRead(buttonpin)){ // Time over, restart from beginning
+                brake();
+                break;
+            }
+
             for (int g= 0 ; g<16; g++){
               for (int p =0 ; p<16; p++){
                 Serial.print(arena_map[g][p]);
@@ -194,15 +199,15 @@ void loop(){
             fast_run_facing=facing;
 
             if(visited[position[0]][position[1]]==1 && flag==1){
-                cout<<"Fast run started for position "<<" { "<<position[0]<<" , "<<position[1]<<" } "<<endl;
+                // cout<<"Fast run started for position "<<" { "<<position[0]<<" , "<<position[1]<<" } "<<endl;
 
                 Node* head=known_path_travel(fast_run_position,arena_map,fast_run_facing,facing,position);
                 movebot(head);
 
-                cout<<"Fast run ended for position "<<" { "<<position[0]<<" , "<<position[1]<<" } "<<endl;
+                // cout<<"Fast run ended for position "<<" { "<<position[0]<<" , "<<position[1]<<" } "<<endl;
             }
 
-            cout<<" making "<<position[0]<< ", " <<position[1]<< " visited"<<endl;
+            // cout<<" making "<<position[0]<< ", " <<position[1]<< " visited"<<endl;
             visited[position[0]][position[1]]=1;
             if(arena_map[position[0]][position[1]]!=0){
                 detect_wall(facing, pos,wall_data); //Detect walls on current node
