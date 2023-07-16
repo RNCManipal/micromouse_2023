@@ -5,9 +5,9 @@
 #define ENCC 1
 #define ENCD SS
 #define in1 4
-#define in2 5
-#define in3 6
-#define in4 A1
+#define in2 7
+#define in3 5
+#define in4 6
 
 int trig1=8, trig2=12, trig3=A2, trig4= A4 ;
 int echo1=9, echo2=13, echo3=A3, echo4=A5;

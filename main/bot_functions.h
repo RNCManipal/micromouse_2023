@@ -11,6 +11,7 @@
 #define MAX_SIZE 4 
 #define OPTIMUM_SPEED 150
 #define WHEEL_DIAMETER 10.681415
+#define counts_per_rotation 840
 //MPU6050 mpu(Wire);
 extern unsigned long timer;
 extern double kp1, ki1, kd1;

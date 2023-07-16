@@ -15,9 +15,9 @@ MPU6050 mpu(Wire);
 #define ENCC 1
 #define ENCD SS
 #define in1 4
-#define in2 5
-#define in3 6
-#define in4 A1
+#define in2 7
+#define in3 5
+#define in4 6
 
 /* Input pins */
 int mtrpin1_1 =in1 ;

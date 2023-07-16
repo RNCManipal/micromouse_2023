@@ -2,6 +2,7 @@
 #include <MPU6050_light.h>
 #define OPTIMUM_SPEED 150
 #define WHEEL_DIAMETER 4.38
+#define counts_per_rotation 840
 
 
 MPU6050 mpu(Wire);
@@ -14,9 +15,9 @@ unsigned long timer = 0;
 #define ENCC 1
 #define ENCD SS
 #define in1 4
-#define in2 5
-#define in3 6
-#define in4 A1
+#define in2 7
+#define in3 5
+#define in4 6
 
 int mtrpin1_1 = in1;
 int mtrpin1_2 = in2;
