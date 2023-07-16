@@ -62,7 +62,7 @@ void setup() {
   pinMode(in4,OUTPUT);
 
   
-  attachInterrupt(digitalPinToInterrupt(ENCA),readEncoder,RISING);
+  // attachInterrupt(digitalPinToInterrupt(ENCA),readEncoder,RISING);
 }
 
 
