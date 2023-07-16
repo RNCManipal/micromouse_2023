@@ -32,7 +32,7 @@ int kp2, kd2;//set the values
 double kp3, kd3; //set the values
 
 int count;
-int counts_per_rotation ; //Set the value
+// int counts_per_rotation ; //Set the value
 
 // int ENCA, ENCB, ENCC, ENCD;
 

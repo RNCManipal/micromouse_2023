@@ -1,8 +1,24 @@
-#define ENCA 2
-#define ENCB 3
-#define PWM 10
-#define in2 7
+
+
+#define WHEEL_DIAMETER 4.38
+// #define WHEEL_DIAMETER 10.681415
+#define counts_per_rotation 840
+
+
+MPU6050 mpu(Wire);
+unsigned long timer = 0;
+
+#define ENCA 0
+#define ENCB MOSI
+#define PWMA 10
+#define PWMB 11
+#define ENCC 1
+#define ENCD SS
 #define in1 4
+#define in2 7
+#define in3 5
+#define in4 6
+
 
 double start_time;
 int pos = 0;
@@ -12,7 +28,7 @@ void setup() {
   Serial.begin(9600);
   pinMode(ENCA,INPUT);
   pinMode(ENCB,INPUT);
-  pinMode (PWM, OUTPUT);
+  pinMode (PWMA, OUTPUT);
   pinMode (in1, OUTPUT);
   pinMode (in2, OUTPUT);
   attachInterrupt(digitalPinToInterrupt(ENCA),readEncoder,RISING);

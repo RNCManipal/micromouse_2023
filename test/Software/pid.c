@@ -21,7 +21,7 @@ void p2p_pid(int dist) {
   if (setpnt_counts < 0) {
     while (1) {
 
-      error = (count) - (setpnt_counts);
+      error = (-count) - (setpnt_counts);
       Serial.println(count);
       Serial.println(error);
       if (lasterror ==0) { // this condition is used to remove intial high gain in velocity
@@ -55,7 +55,7 @@ void p2p_pid(int dist) {
   } else if (setpnt_counts > 0) {
     while (1) {
       
-      error = (setpnt_counts) -(count); // x is the number of encoder countsper revolution
+      error = (setpnt_counts) -(-count); // x is the number of encoder countsper revolution
       Serial.println(count);
       Serial.println(error);
       
