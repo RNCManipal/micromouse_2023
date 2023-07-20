@@ -33,37 +33,37 @@ void setup() {
   pinMode (in2, OUTPUT);
   attachInterrupt(digitalPinToInterrupt(ENCA),readEncoder,RISING);
 }
-void stop_motor(){
-  digitalWrite(in1,LOW);
-  digitalWrite(in2,LOW);        
-}
+// void stop_motor(){
+//   digitalWrite(in1,LOW);
+//   digitalWrite(in2,LOW);        
+// }
 
-double time(){
-  start_time = millis();
-  return start_time;
-}
+// double time(){
+//   start_time = millis();
+//   return start_time;
+// }
 
 void loop() {
-      
-      if(pos<0) {
-        stop_motor();
-        double curr_time= millis();
-        double time_elspased= (curr_time - start_time);
-        Serial.println(time_elspased); 
+    Serial.println(pos);  
+  //     if(pos<0) {
+  //       stop_motor();
+  //       double curr_time= millis();
+  //       double time_elspased= (curr_time - start_time);
+  //       Serial.println(time_elspased); 
          
-      }
+  //     }
 
-   if(pos==0){
-     double start_time= time();
-   }   
+  //  if(pos==0){
+  //    double start_time= time();
+  //  }   
    
-    if(pos>=0){
-      digitalWrite(in1,HIGH);
-      digitalWrite(in2,LOW);
-      analogWrite (PWM, 255);
-      delay(94);
-      Serial.println(pos);
-    }
+  //   if(pos>=0){
+  //     digitalWrite(in1,HIGH);
+  //     digitalWrite(in2,LOW);
+  //     analogWrite (PWM, 255);
+  //     delay(94);
+  //     Serial.println(pos);
+  //   }
 }
 
 void readEncoder(){

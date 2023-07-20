@@ -19,25 +19,29 @@ MPU6050 mpu(Wire);
 #define in3 5
 #define in4 6
 
+#define counts_per_rotation 199 
 /* Input pins */
 int mtrpin1_1 =in1 ;
 int mtrpin1_2=in2;
 int mtrpin2_1=in3 ;
 int mtrpin2_2 =in4;
 
+int count_left = 0;
+int count_right = 0;
+
 unsigned long int timer = 0;
 int mtrspd1=PWMA ;
 int mtrspd2=PWMB;
 
 double kp1=0.2, ki1, kd1=1;
-//Not using KP2, kd2
+double kp2=0.9795, ki2, kd2=1
 double kp3=0.2, ki3, kd3=1;
 int threshold = 9;
-int counts_per_rotation = 520;
 
-int sens_trig0 =8, sens_echo0 =9;
-int sens_trig1 =12, sens_echo1=13;
-int sens_trig2 =A3, sens_echo2 =A2;
+
+int sens_trig0 =12, sens_echo0 =13;
+int sens_trig1 =8, sens_echo1=9;
+int sens_trig2 =A2, sens_echo2 =A3;
 int sens_trig3 =A4, sens_echo3 =A5;
 
 
@@ -48,14 +52,24 @@ bool wall_data[6][6][4];
 
 int count = 0;
 
-void readEncoder (){
-    int b = digitalRead(ENCB);
-    if(b > 0){
-       count++; //count is current encoder count 
+void readEncoder_right (){
+    int a = digitalRead(ENCC);
+    if(a > 0){
+       count_right++; //count is current encoder count 
     } else{
-       count--;
+       count_right--;
     }
 }
+
+void readEncoder_left (){
+    int b = digitalRead(ENCA);
+    if(b > 0){
+       count_left++; //count is current encoder count 
+    } else{
+       count_left--;
+    }
+}
+
 
 void setup(){
   Serial.begin(9600);
@@ -63,7 +77,7 @@ void setup(){
   byte status = mpu.begin();
   Serial.print(F("MPU6050 status: "));
   Serial.println(status);
-  while(status!=0){Serial.println("Not Connected"); } // stop everything if could not connect to MPU6050
+//   while(status!=0){Serial.println("Not Connected"); } // stop everything if could not connect to MPU6050
   
   Serial.println(F("Calculating offsets, do not move MPU6050"));
   mpu.calcOffsets(); // gyro and accelero
@@ -90,7 +104,10 @@ void setup(){
   pinMode(sens_trig2,OUTPUT);
   pinMode(sens_trig3,OUTPUT);
 
-  attachInterrupt(digitalPinToInterrupt(ENCA),readEncoder,RISING);
+  
+  attachInterrupt(digitalPinToInterrupt(ENCA),readEncoder_left,RISING);
+  attachInterrupt(digitalPinToInterrupt(ENCC),readEncoder_right,RISING);
+
     for (int i =0 ; i<6; i++){  //intializing wall array to 0 initially
         for (int j =0; j<6; j++){
             for (int k = 0; k<4; k++){
